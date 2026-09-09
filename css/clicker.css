@@ -7,477 +7,511 @@
 }
 
 :root {
-  --grout: #060e0a;
-  --belt-bg: #0a1710;
-  --belt-rail: #1c3b2b;
-  --gold: #d4af37;
-  --amber: #f59e0b;
-  --cyan: #38bdf8;
-  --ink: #eaf6ef;
-  --muted: #8ca395;
+  --sky-top: #1a0f2e;
+  --sky-mid: #96384e;
+  --sky-bottom: #e06c3a;
+  --sun-gold: #fde047;
+  --grass-top: #388e3c;
+  --grass-dirt: #2e6628;
+  --dirt-brown: #4e342e;
+  --emerald-main: #10b981;
+  --emerald-dark: #047857;
+  --emerald-light: #6ee7b7;
+  --gui-bg: #2d3238;
+  --gui-border-light: #525a65;
+  --gui-border-dark: #1b1e22;
+  --gold: #fbbf24;
 }
 
 body {
   min-height: 100vh;
-  background-color: var(--grout);
-  color: var(--ink);
-  font-family: 'Syne', sans-serif;
+  background-color: var(--sky-top);
+  font-family: 'Press Start 2P', monospace;
+  color: #ffffff;
   overflow-x: hidden;
   position: relative;
-  display: flex;
-  justify-content: center;
+  image-rendering: pixelated; /* Conserve le crénelage rétro des pixels */
 }
 
 /* ====================================================
-   FOND : BLOCS DE VERRE AVEC LUMIÈRE TRAVERSANTE (AMBRE & VERT)
+   DÉCOR PIXEL ART MINECRAFT (VOXEL WORLD)
    ==================================================== */
-.glass-chamber {
+.voxel-world {
   position: fixed;
   inset: 0;
   z-index: 0;
-  pointer-events: none;
-  /* Grille de briques de verre avec réfractions croisées */
-  background-color: #071710;
-  background-image:
-    /* Joints sombres de maçonnerie */
-    linear-gradient(to right, rgba(2, 6, 4, 0.95) 3px, transparent 3px),
-    linear-gradient(to bottom, rgba(2, 6, 4, 0.95) 3px, transparent 3px),
-    /* Éclats lumineux chauds et froids traversant le verre */
-    radial-gradient(ellipse at 15% 25%, rgba(245, 158, 11, 0.28) 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 65%, rgba(56, 189, 248, 0.2) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.25) 0%, transparent 60%),
-    repeating-linear-gradient(45deg, #0d261b 0 20px, #081a13 20px 40px);
-  background-size: 46px 46px, 46px 46px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  background: linear-gradient(
+    180deg,
+    var(--sky-top) 0%,
+    #4a1532 25%,
+    var(--sky-mid) 50%,
+    var(--sky-bottom) 70%,
+    #f59e0b 90%
+  );
 }
 
-.light-beams {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  /* Halos diagonaux simulant le soleil à travers une verrière teintée */
-  background: 
-    linear-gradient(135deg, rgba(251, 191, 36, 0.12) 0%, transparent 35%, rgba(16, 185, 129, 0.08) 60%, rgba(0, 0, 0, 0.7) 100%),
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.1) 0%, transparent 55%);
-}
-
-/* ====================================================
-   TAPIS ROULANTS INDUSTRIELS (RÉSEAU DE FOND)
-   ==================================================== */
-.conveyor-network {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 4%;
-  opacity: 0.85;
-}
-
-.conveyor-lane {
-  position: relative;
-  width: 44px;
-  height: 100vh;
-  background: var(--belt-bg);
-  border-left: 2px solid var(--belt-rail);
-  border-right: 2px solid var(--belt-rail);
+/* Soleil carré Minecraft */
+.pixel-sun {
+  position: absolute;
+  bottom: 30%;
+  left: 65%;
+  width: 72px;
+  height: 72px;
+  background-color: var(--sun-gold);
   box-shadow: 
-    inset 0 0 12px rgba(0, 0, 0, 0.9),
-    0 0 16px rgba(16, 185, 129, 0.15);
-  overflow: hidden;
+    0 0 0 6px #fef08a,
+    0 0 0 14px rgba(253, 224, 71, 0.4),
+    0 0 35px rgba(251, 146, 60, 0.8);
+  border: 4px solid #fff;
 }
 
-/* Rainures crantées du tapis roulant qui défilent */
-.belt-ribs {
+/* Nuages carrés étagés */
+.pixel-cloud {
+  position: absolute;
+  height: 24px;
+  background: rgba(255, 230, 220, 0.55);
+  box-shadow: 
+    0 8px 0 rgba(220, 160, 160, 0.45),
+    inset 0 4px 0 rgba(255, 255, 255, 0.6);
+}
+
+.cloud-1 {
+  width: 220px;
+  top: 15%;
+  left: -240px;
+  animation: float-cloud 50s linear infinite;
+}
+
+.cloud-2 {
+  width: 160px;
+  top: 26%;
+  left: -180px;
+  animation: float-cloud 38s linear infinite 14s;
+}
+
+@keyframes float-cloud {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(calc(100vw + 300px)); }
+}
+
+/* Oiseaux carrés */
+.pixel-birds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.voxel-bird {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #2e081c;
+  box-shadow: 8px 4px 0 #2e081c, -8px 4px 0 #2e081c;
+  animation: fly-across linear infinite;
+}
+
+@keyframes fly-across {
+  0%   { transform: translate(-40px, 0); }
+  50%  { transform: translate(50vw, -20px); }
+  100% { transform: translate(105vw, 10px); }
+}
+
+/* Collines et montagnes en escalier voxel */
+.mountain-layer {
+  position: absolute;
+  bottom: 120px;
+  left: 0;
+  right: 0;
+  height: 160px;
+  pointer-events: none;
+}
+
+.mountain-layer.distant {
+  background: 
+    repeating-linear-gradient(90deg, #371a33 0 60px, #421e3c 60px 120px);
+  clip-path: polygon(
+    0% 100%, 0% 60%, 15% 30%, 30% 60%, 45% 20%, 65% 55%, 80% 15%, 100% 50%, 100% 100%
+  );
+  opacity: 0.6;
+}
+
+.mountain-layer.near {
+  bottom: 80px;
+  height: 140px;
+  background: 
+    repeating-linear-gradient(90deg, #1e3822 0 50px, #244629 50px 100px);
+  clip-path: polygon(
+    0% 100%, 0% 50%, 20% 25%, 35% 60%, 55% 15%, 75% 45%, 90% 20%, 100% 40%, 100% 100%
+  );
+}
+
+/* Ligne complète de rails de wagonnet (Minecart Track) */
+.minecart-track {
+  position: absolute;
+  bottom: 68px;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background-color: #3b2818;
+  border-top: 4px solid #23160b;
+}
+
+/* Traverses en bois carrées */
+.rail-ties {
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.04) 0px,
-    rgba(255, 255, 255, 0.04) 3px,
-    transparent 3px,
-    transparent 9px
+    90deg,
+    #5d4037 0px 8px,
+    transparent 8px 24px
   );
-  background-size: 100% 18px;
-  animation: belt-scroll 1.4s linear infinite;
 }
 
-.lane-left .belt-ribs, .lane-right .belt-ribs {
-  animation-direction: normal; /* Défile vers le bas */
-}
-
-.lane-mid .belt-ribs {
-  animation-direction: reverse; /* Défile vers le haut */
-}
-
-@keyframes belt-scroll {
-  0%   { background-position: 0 0; }
-  100% { background-position: 0 18px; }
-}
-
-.lane-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-/* Caissons / Objets convoyés */
-.belt-package {
+/* Rails métalliques */
+.iron-rails {
   position: absolute;
-  left: 4px;
-  width: 34px;
-  background: linear-gradient(145deg, #163626, #091710);
-  border: 1px solid #3d795a;
-  box-shadow: 
-    0 4px 10px rgba(0, 0, 0, 0.8),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.2);
-  padding: 4px 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  border-top: 3px solid #cfd8dc;
+  border-bottom: 3px solid #90a4ae;
 }
 
-.belt-package.dir-down {
-  animation: roll-down linear infinite;
-}
-
-.belt-package.dir-up {
-  animation: roll-up linear infinite;
-}
-
-.package-icon {
-  width: 18px;
-  height: 18px;
-  fill: #6ee7b7;
-  filter: drop-shadow(0 0 3px rgba(110, 231, 183, 0.7));
-}
-
-.package-tag {
-  font-family: 'Cinzel', serif;
-  font-size: 0.42rem;
-  font-weight: 800;
-  color: var(--gold);
-  letter-spacing: 0.3px;
-  text-align: center;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.package-led {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--amber);
-  box-shadow: 0 0 4px var(--amber);
-}
-
-@keyframes roll-down {
-  0%   { transform: translateY(-80px); }
-  100% { transform: translateY(105vh); }
-}
-
-@keyframes roll-up {
-  0%   { transform: translateY(105vh); }
-  100% { transform: translateY(-80px); }
-}
-
-/* ====================================================
-   STRUCTURE CENTRALE
-   ==================================================== */
-.app-layout {
-  position: relative;
-  z-index: 3;
-  width: 100%;
-  max-width: 820px;
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 100vh;
-}
-
-/* ====================================================
-   1. ENTÊTE
-   ==================================================== */
-.masthead {
-  text-align: center;
-  max-width: 620px;
-}
-
-.kicker {
-  font-family: 'Cinzel', serif;
-  font-size: 0.72rem;
-  letter-spacing: 4px;
-  color: var(--gold);
-  font-weight: 800;
-  margin-bottom: 3px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
-}
-
-.masthead h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 2.3rem;
-  letter-spacing: 2px;
-  font-weight: 900;
-  color: #f1f8f3;
-  text-transform: uppercase;
-  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.95);
-}
-
-.subtitle {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin-top: 4px;
-  line-height: 1.4;
-}
-
-/* ====================================================
-   2. FORGE & BOUTON CENTRAL
-   ==================================================== */
-.forge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.meter {
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.count {
-  font-family: 'Cinzel', serif;
-  font-size: 4.2rem;
-  font-weight: 900;
-  color: #ffffff;
-  line-height: 1;
-  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95), 0 0 24px rgba(52, 211, 153, 0.3);
-  transition: transform 0.05s ease;
-}
-
-.unit {
-  font-family: 'Cinzel', serif;
-  font-size: 0.78rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 700;
-  margin-top: 4px;
-}
-
-.rate {
-  font-size: 0.75rem;
-  color: var(--muted);
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-top: 2px;
-}
-
-/* Bloc central en verre biseauté */
-.tile-block {
-  position: relative;
-  padding: 12px;
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(16, 185, 129, 0.1) 40%, rgba(5, 20, 14, 0.95) 100%);
-  border: 2px solid #2f6f4e;
-  box-shadow: 
-    0 16px 40px rgba(0, 0, 0, 0.9),
-    inset 2px 2px 3px rgba(255, 255, 255, 0.3),
-    inset -2px -2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.tile-highlight {
+.cart-container {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  right: 2px;
-  height: 38%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, transparent 100%);
+  inset: 0;
   pointer-events: none;
 }
 
-.bouzouc-btn {
-  position: relative;
-  width: 175px;
-  height: 175px;
-  border-radius: 0;
-  border: 1px solid #163d2a;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c2/N%27Golo_Kant%C3%A9_2018.jpg');
-  background-size: 135%;
-  background-position: center 20%;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  display: block;
-  filter: contrast(1.1) brightness(0.95);
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
-  transition: transform 0.06s ease, filter 0.15s ease;
-  touch-action: manipulation;
+/* Wagonnet (Minecart) pixélisé */
+.pixel-minecart {
+  position: absolute;
+  bottom: 2px;
+  width: 32px;
+  height: 22px;
+  background: #546e7a;
+  border: 3px solid #263238;
+  border-top: none;
+  box-shadow: inset 0 -3px 0 #37474f;
+  animation: roll-cart linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.bouzouc-btn:hover {
-  filter: contrast(1.15) brightness(1.08);
+.pixel-minecart::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 3px;
+  width: 6px;
+  height: 4px;
+  background: #102027;
+  box-shadow: 16px 0 0 #102027;
 }
 
-.bouzouc-btn:active {
-  transform: scale(0.95);
+.cart-cargo {
+  width: 14px;
+  height: 14px;
+  background-color: var(--emerald-main);
+  border: 2px solid var(--emerald-dark);
+  margin-top: -6px;
+}
+
+@keyframes roll-cart {
+  0%   { transform: translateX(-50px); }
+  100% { transform: translateX(calc(100vw + 50px)); }
+}
+
+/* Sol d'herbe cubique façon Minecraft */
+.grass-ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background-color: var(--dirt-brown);
+  border-top: 10px solid var(--grass-top);
+  box-shadow: inset 0 6px 0 var(--grass-dirt);
+}
+
+/* Mouton cubique */
+.pixel-sheep {
+  position: absolute;
+  top: -24px;
+  left: 12%;
+  width: 28px;
+  height: 18px;
+  background: #eceff1;
+  border: 2px solid #b0bec5;
+  box-shadow: 
+    -8px 4px 0 #cfd8dc, /* Tête */
+    -10px 6px 0 #263238; /* Yeux */
+}
+
+.pixel-sheep::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 2px;
+  width: 4px;
+  height: 6px;
+  background: #263238;
+  box-shadow: 16px 0 0 #263238; /* Pattes */
 }
 
 /* ====================================================
-   3. CATALOGUE DE LA BOUTIQUE
+   INTERFACE & POLICES RÉTRO
    ==================================================== */
-.bazaar {
+.ui-layer {
+  position: relative;
+  z-index: 5;
   width: 100%;
-  background: rgba(7, 18, 12, 0.94);
-  border: 1px solid #1f4834;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
-  padding: 14px 18px;
-  backdrop-filter: blur(8px);
+  max-width: 860px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.bazaar-header {
+.game-header {
+  text-align: center;
+}
+
+.kicker {
+  font-size: 0.65rem;
+  color: var(--gold);
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px #000;
+}
+
+.game-header h1 {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  color: #fff;
+  text-shadow: 3px 3px #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+}
+
+.subtitle {
+  font-size: 0.55rem;
+  color: #d1d5db;
+  line-height: 1.6;
+  margin-top: 8px;
+  text-shadow: 1px 1px #000;
+}
+
+/* ====================================================
+   LE BLOC D'ÉMERAUDE AU CENTRE
+   ==================================================== */
+.mining-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.pixel-scoreboard {
+  background: var(--gui-bg);
+  border: 4px solid var(--gui-border-dark);
+  border-top-color: var(--gui-border-light);
+  border-left-color: var(--gui-border-light);
+  padding: 12px 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+}
+
+.count {
+  font-size: 1.8rem;
+  color: #facc15;
+  text-shadow: 2px 2px #000;
+  transition: transform 0.04s ease;
+}
+
+.unit {
+  font-size: 0.55rem;
+  color: #a7f3d0;
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+
+.rate {
+  font-size: 0.5rem;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+/* Bouton Bloc d'Émeraude Pixel Art */
+.emerald-voxel-wrapper {
+  perspective: 600px;
+}
+
+.emerald-voxel-btn {
+  width: 140px;
+  height: 140px;
+  position: relative;
+  background-color: var(--emerald-main);
+  border: 6px solid #064e3b;
+  cursor: pointer;
+  outline: none;
+  /* Motif interne du bloc d'émeraude */
+  background-image:
+    linear-gradient(45deg, #047857 25%, transparent 25%),
+    linear-gradient(-45deg, #047857 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #34d399 75%),
+    linear-gradient(-45deg, transparent 75%, #34d399 75%);
+  background-size: 36px 36px;
+  background-position: 0 0, 0 18px, 18px -18px, -18px 0px;
+  box-shadow: 
+    inset 8px 8px 0 #34d399,
+    inset -8px -8px 0 #064e3b,
+    6px 6px 0 #000;
+  transition: transform 0.04s ease;
+}
+
+.emerald-voxel-btn:active {
+  transform: scale(0.92) translate(4px, 4px);
+  box-shadow: 
+    inset 8px 8px 0 #064e3b,
+    inset -8px -8px 0 #34d399,
+    2px 2px 0 #000;
+}
+
+/* ====================================================
+   BOUTIQUE FAÇON INTERFACE DE CRAFT / INVENTAIRE
+   ==================================================== */
+.inventory-bazaar {
+  width: 100%;
+  background: var(--gui-bg);
+  border: 4px solid var(--gui-border-dark);
+  border-top-color: var(--gui-border-light);
+  border-left-color: var(--gui-border-light);
+  padding: 14px;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.7);
+}
+
+.inventory-title {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  border-bottom: 1px solid rgba(47, 122, 85, 0.3);
+  font-size: 0.55rem;
+  color: #e5e7eb;
+  border-bottom: 4px solid var(--gui-border-dark);
   padding-bottom: 8px;
   margin-bottom: 12px;
-}
-
-.bazaar-header h2 {
-  font-family: 'Cinzel', serif;
-  font-size: 0.88rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #f1f8f3;
-  font-weight: 800;
-}
-
-.sub-lead {
-  font-size: 0.65rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
 }
 
 .catalog {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
-.merch {
-  background: linear-gradient(135deg, #10291d 0%, #081710 100%);
-  border: 1px solid #204b34;
-  padding: 9px 12px;
+.merch-slot {
+  background: #1f2327;
+  border: 3px solid var(--gui-border-dark);
+  border-top-color: #3b424b;
+  border-left-color: #3b424b;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  text-align: left;
+  min-height: 64px;
   cursor: pointer;
-  min-height: 72px;
-  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.08);
-  transition: all 0.12s ease;
+  text-align: left;
+  font-family: 'Press Start 2P', monospace;
 }
 
-.merch:hover:not(:disabled) {
-  background: linear-gradient(135deg, #163d2a 0%, #0d251a 100%);
-  border-color: #408d64;
-  transform: translateY(-2px);
+.merch-slot:hover:not(:disabled) {
+  background: #2b3137;
+  border-color: #60a5fa;
 }
 
-.merch:active:not(:disabled) {
-  transform: scale(0.98);
+.merch-slot:active:not(:disabled) {
+  transform: translate(2px, 2px);
 }
 
-.merch:disabled {
-  opacity: 0.32;
+.merch-slot:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
-  border-color: #112219;
-  background: #060e0a;
+  filter: grayscale(0.8);
 }
 
-.merch-meta {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 6px;
+.slot-name {
+  font-size: 0.45rem;
+  color: #fff;
+  line-height: 1.3;
 }
 
-.merch-name {
-  font-family: 'Cinzel', serif;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.5px;
+.slot-gain {
+  font-size: 0.4rem;
+  color: #34d399;
+  margin-top: 4px;
+  display: block;
 }
 
-.merch-gain {
-  font-size: 0.68rem;
-  color: #639c7f;
-  font-weight: 700;
-  margin-top: 1px;
-}
-
-.merch-deal {
+.slot-deal {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 5px;
+  border-top: 2px solid #2d3238;
+  padding-top: 4px;
+  margin-top: 6px;
 }
 
 .price {
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--gold);
-}
-
-.price::after {
-  content: " Z";
-  font-size: 0.65rem;
+  font-size: 0.45rem;
+  color: #fbbf24;
 }
 
 .owned {
-  font-size: 0.65rem;
-  color: var(--muted);
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-size: 0.45rem;
+  color: #9ca3af;
 }
 
-/* Particules de clics (+X) */
-.pop-number {
+/* Slot légendaire */
+.relic-slot {
+  grid-column: span 3;
+  flex-direction: row;
+  align-items: center;
+  background: #2b1805;
+  border-color: #d97706;
+  min-height: 48px;
+}
+
+.gold-text {
+  color: #fde047;
+  text-shadow: 1px 1px #000;
+}
+
+.relic-sub {
+  color: #fed7aa;
+}
+
+/* Particules rétro pixelisées */
+.pixel-pop {
   position: fixed;
   pointer-events: none;
-  font-family: 'Cinzel', serif;
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: var(--gold);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.9rem;
+  color: #34d399;
+  text-shadow: 2px 2px #000;
   z-index: 100;
-  animation: float-ascend 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: pop-pixel 0.6s steps(6) forwards;
 }
 
-@keyframes float-ascend {
-  0%   { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(0.9); }
-  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-45px) scale(1.1); }
+@keyframes pop-pixel {
+  0%   { transform: translate(-50%, -50%) translateY(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) translateY(-48px); opacity: 0; }
 }
 
-/* Responsive mobile */
 @media (max-width: 720px) {
-  .conveyor-network { padding: 0 1%; }
-  .conveyor-lane { width: 28px; }
-  .belt-package { width: 22px; left: 1px; padding: 2px 1px; }
-  .package-icon { width: 14px; height: 14px; }
-  .package-tag { display: none; }
-  
-  .app-layout { padding: 16px 12px; }
-  .masthead h1 { font-size: 1.7rem; }
-  .count { font-size: 3rem; }
-  .bouzouc-btn { width: 140px; height: 140px; }
-  .catalog { grid-template-columns: 1fr; gap: 7px; }
-  .merch { flex-direction: row; align-items: center; min-height: auto; padding: 8px 10px; }
-  .merch-deal { border-top: none; padding-top: 0; gap: 8px; }
+  .game-header h1 { font-size: 1rem; }
+  .count { font-size: 1.3rem; }
+  .emerald-voxel-btn { width: 110px; height: 110px; }
+  .catalog { grid-template-columns: 1fr; }
+  .relic-slot { grid-column: span 1; flex-direction: column; align-items: flex-start; }
 }

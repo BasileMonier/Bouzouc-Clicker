@@ -1,43 +1,46 @@
-// --- ÉTAT DU JEU ---
-let zoucs = 0;
-let clickPower = 1;
-let passiveIncome = 0;
+// --- ÉTAT DU JEU & SAUVEGARDE LOCALE ---
+let saved = {};
+try {
+  saved = JSON.parse(localStorage.getItem('bouzouc_pixel_save') || '{}');
+} catch (e) {
+  saved = {};
+}
 
-// --- DÉFINITION DES ICÔNES VECTORIELLES SVG ---
-const ICONS = {
-  chisel: `<svg class="package-icon" viewBox="0 0 24 24"><path d="M19.7 4.3a1 1 0 0 0-1.4 0L13 9.6l1.4 1.4 5.3-5.3a1 1 0 0 0 0-1.4zM4.3 18.3 11.6 11l1.4 1.4-7.3 7.3H3v-2.7z"/></svg>`,
-  robot:  `<svg class="package-icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .7-.4 1.3-1 1.7V7h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-1v2a1 1 0 0 1-2 0v-2h-4v2a1 1 0 0 1-2 0v-2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h4V5.7c-.6-.4-1-1-1-1.7a2 2 0 0 1 2-2zm-3 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>`,
-  press:  `<svg class="package-icon" viewBox="0 0 24 24"><path d="M4 4h16v3H4zm2 5h12v2H6zm-2 4h16v2H4zm3 4h10v3H7z"/></svg>`,
-  squad:  `<svg class="package-icon" viewBox="0 0 24 24"><path d="M12 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-6 3a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm12 0a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4 18c0-2.2 2-4 5-4h6c3 0 5 1.8 5 4v2H4v-2z"/></svg>`,
-  crucible:`<svg class="package-icon" viewBox="0 0 24 24"><path d="M5 4h14l-2 11a5 5 0 0 1-5 4 5 5 0 0 1-5-4L5 4zm7 3a2 2 0 0 0-2 2c0 1.5 2 3.5 2 3.5s2-2 2-3.5a2 2 0 0 0-2-2z"/></svg>`,
-  furnace: `<svg class="package-icon" viewBox="0 0 24 24"><path d="M12 2C8 6 6 9.5 6 13a6 6 0 0 0 12 0c0-3.5-2-7-6-11zm0 15a3 3 0 0 1-3-3c0-1.7 1.3-3.3 3-5 1.7 1.7 3 3.3 3 5a3 3 0 0 1-3 3z"/></svg>`
-};
+let zoucs = typeof saved.zoucs === 'number' ? saved.zoucs : 0;
+let clickPower = typeof saved.clickPower === 'number' ? saved.clickPower : 1;
+let passiveIncome = typeof saved.passiveIncome === 'number' ? saved.passiveIncome : 0;
 
-// --- CATALOGUE DES OBJETS ---
+// --- CATALOGUE D'OUTILS ET MACHINES CUBIQUES ---
 const catalog = {
-  click1: { baseCost: 15,    cost: 15,    gainClick: 1,  gainAuto: 0,  qty: 0, mult: 1.15, icon: ICONS.chisel,   label: 'Burin',   lane: 1, dir: 'down' },
-  auto1:  { baseCost: 30,    cost: 30,    gainClick: 0,  gainAuto: 1,  qty: 0, mult: 1.15, icon: ICONS.robot,    label: 'Robot',   lane: 2, dir: 'up' },
-  click2: { baseCost: 120,   cost: 120,   gainClick: 4,  gainAuto: 0,  qty: 0, mult: 1.18, icon: ICONS.press,    label: 'Presse',  lane: 3, dir: 'down' },
-  auto2:  { baseCost: 350,   cost: 350,   gainClick: 0,  gainAuto: 8,  qty: 0, mult: 1.18, icon: ICONS.squad,    label: 'Peloton', lane: 1, dir: 'down' },
-  click3: { baseCost: 1000,  cost: 1000,  gainClick: 20, gainAuto: 0,  qty: 0, mult: 1.22, icon: ICONS.crucible, label: 'Creuset', lane: 2, dir: 'up' },
-  auto3:  { baseCost: 3200,  cost: 3200,  gainClick: 0,  gainAuto: 50, qty: 0, mult: 1.25, icon: ICONS.furnace,  label: 'Four',    lane: 3, dir: 'down' }
+  click1: { baseCost: 15,      cost: 15,      gainClick: 1,    gainAuto: 0,    qty: 0, mult: 1.15, color: '#8d6e63' },
+  auto1:  { baseCost: 30,      cost: 30,      gainClick: 0,    gainAuto: 1,    qty: 0, mult: 1.15, color: '#b0bec5' },
+  click2: { baseCost: 120,     cost: 120,     gainClick: 5,    gainAuto: 0,    qty: 0, mult: 1.18, color: '#cfd8dc' },
+  auto2:  { baseCost: 400,     cost: 400,     gainClick: 0,    gainAuto: 12,   qty: 0, mult: 1.18, color: '#ef4444' },
+  click3: { baseCost: 1500,    cost: 1500,    gainClick: 35,   gainAuto: 0,    qty: 0, mult: 1.22, color: '#38bdf8' },
+  auto3:  { baseCost: 5000,    cost: 5000,    gainClick: 0,    gainAuto: 90,   qty: 0, mult: 1.25, color: '#f59e0b' },
+  relic:  { baseCost: 1000000, cost: 1000000, gainClick: 6000, gainAuto: 1200, qty: 0, mult: 1.40, color: '#27272a' }
 };
 
-// --- RÉFÉRENCES DU DOM ---
+if (saved.catalog) {
+  for (const k in saved.catalog) {
+    if (catalog[k]) {
+      catalog[k].qty = saved.catalog[k].qty || 0;
+      catalog[k].cost = saved.catalog[k].cost || catalog[k].baseCost;
+    }
+  }
+}
+
+// --- ÉLÉMENTS DU DOM ---
 const counterEl = document.getElementById('counter');
 const passiveRateEl = document.getElementById('passive-rate');
 const targetBtn = document.getElementById('bouzouc');
-const laneTracks = {
-  1: document.getElementById('lane-track-1'),
-  2: document.getElementById('lane-track-2'),
-  3: document.getElementById('lane-track-3')
-};
+const cartContainer = document.getElementById('cart-container');
+const birdsLayer = document.getElementById('pixel-birds');
 
 for (const key in catalog) {
   catalog[key].btnEl = document.getElementById(`buy-${key}`);
   catalog[key].costEl = document.getElementById(`cost-${key}`);
   catalog[key].qtyEl = document.getElementById(`qty-${key}`);
-
   catalog[key].btnEl.addEventListener('click', () => buyItem(key));
 }
 
@@ -45,48 +48,65 @@ function formatNum(num) {
   return Math.floor(num).toLocaleString('fr-FR');
 }
 
-// Chiffres volants au clic (+X)
-function spawnParticle(x, y, amount) {
+// 1. OISEAUX CARRÉS DANS LE CIEL
+function spawnPixelBird() {
+  const bird = document.createElement('div');
+  bird.className = 'voxel-bird';
+  bird.style.top = `${Math.random() * 35 + 8}%`;
+  bird.style.animationDuration = `${(Math.random() * 8 + 14).toFixed(1)}s`;
+  birdsLayer.appendChild(bird);
+
+  setTimeout(() => bird.remove(), 22000);
+}
+setInterval(spawnPixelBird, 5500);
+spawnPixelBird();
+
+// 2. ENVOI D'UN WAGONNET SUR LES RAILS
+function spawnMinecart(cargoColor) {
+  if (cartContainer.children.length > 14) {
+    cartContainer.firstElementChild.remove();
+  }
+
+  const cart = document.createElement('div');
+  cart.className = 'pixel-minecart';
+
+  // Petite boîte de cargaison dans le wagonnet
+  const cargo = document.createElement('div');
+  cargo.className = 'cart-cargo';
+  cargo.style.backgroundColor = cargoColor;
+  cart.appendChild(cargo);
+
+  // Vitesse de circulation sur les rails (entre 7s et 12s)
+  const duration = (Math.random() * 5 + 7).toFixed(1);
+  cart.style.animationDuration = `${duration}s`;
+  cart.style.animationDelay = `-${(Math.random() * 6).toFixed(1)}s`;
+
+  cartContainer.appendChild(cart);
+}
+
+// Restaurer les wagonnets des améliorations déjà possédées
+for (const k in catalog) {
+  if (catalog[k].qty > 0) {
+    spawnMinecart(catalog[k].color);
+  }
+}
+
+// 3. CHIFFRES PIXEL ART JAILLISSANTS
+function spawnPixelParticle(x, y, amount) {
   const node = document.createElement('div');
-  node.className = 'pop-number';
+  node.className = 'pixel-pop';
   node.textContent = `+${amount}`;
-  const drift = (Math.random() - 0.5) * 30;
+  const drift = (Math.random() - 0.5) * 36;
   node.style.left = `${x + drift}px`;
   node.style.top = `${y}px`;
   document.body.appendChild(node);
 
-  setTimeout(() => node.remove(), 650);
-}
-
-// INJECTION D'UN MODULE SUR L'UN DES TAPIS ROULANTS
-function spawnConveyorPackage(iconSvg, label, laneIndex, direction) {
-  const track = laneTracks[laneIndex];
-  if (!track) return;
-
-  // Limite pour garantir 60 FPS constants
-  if (track.children.length > 10) {
-    track.firstElementChild.remove();
-  }
-
-  const pkg = document.createElement('div');
-  pkg.className = `belt-package dir-${direction}`;
-
-  // Vitesse de transit du tapis (entre 9s et 15s)
-  const duration = (Math.random() * 6 + 9).toFixed(1);
-  pkg.style.animationDuration = `${duration}s`;
-
-  pkg.innerHTML = `
-    ${iconSvg}
-    <span class="package-tag">${label}</span>
-    <span class="package-led"></span>
-  `;
-
-  track.appendChild(pkg);
+  setTimeout(() => node.remove(), 600);
 }
 
 function refreshUI() {
   counterEl.textContent = formatNum(zoucs);
-  passiveRateEl.textContent = `${formatNum(passiveIncome)} / sec`;
+  passiveRateEl.textContent = `+${formatNum(passiveIncome)} / SEC`;
 
   for (const key in catalog) {
     const item = catalog[key];
@@ -96,21 +116,36 @@ function refreshUI() {
   }
 }
 
-// Frapper le Bouzouc
-function handleStrike(e) {
+// Sauvegarde locale
+function saveGame() {
+  const dump = {
+    zoucs,
+    clickPower,
+    passiveIncome,
+    catalog: {}
+  };
+  for (const k in catalog) {
+    dump.catalog[k] = { qty: catalog[k].qty, cost: catalog[k].cost };
+  }
+  localStorage.setItem('bouzouc_pixel_save', JSON.stringify(dump));
+}
+setInterval(saveGame, 3000);
+
+// MINER LE BLOC D'ÉMERAUDE
+function handleMine(e) {
   zoucs += clickPower;
   refreshUI();
 
   counterEl.style.transform = 'scale(1.08)';
-  setTimeout(() => counterEl.style.transform = 'scale(1)', 50);
+  setTimeout(() => counterEl.style.transform = 'scale(1)', 40);
 
   const box = targetBtn.getBoundingClientRect();
-  const x = e.clientX || (box.left + box.width / 2);
-  const y = e.clientY || (box.top + box.height / 2);
-  spawnParticle(x, y, clickPower);
+  const x = (e && e.clientX) ? e.clientX : (box.left + box.width / 2);
+  const y = (e && e.clientY) ? e.clientY : (box.top + box.height / 2);
+  spawnPixelParticle(x, y, clickPower);
 }
 
-// Achat d'une amélioration
+// ACHAT D'AMÉLIORATION
 function buyItem(key) {
   const item = catalog[key];
   if (zoucs >= item.cost) {
@@ -120,14 +155,13 @@ function buyItem(key) {
     passiveIncome += item.gainAuto;
     item.cost = Math.round(item.cost * item.mult);
 
-    // Déploie le module sur son tapis roulant dédié
-    spawnConveyorPackage(item.icon, item.label, item.lane, item.dir);
-
+    spawnMinecart(item.color);
     refreshUI();
+    saveGame();
   }
 }
 
-// Production passive (10 fois par seconde)
+// REVENU PASSIF (Toutes les 100ms)
 setInterval(() => {
   if (passiveIncome > 0) {
     zoucs += passiveIncome / 10;
@@ -139,6 +173,14 @@ setInterval(() => {
   }
 }, 100);
 
-targetBtn.addEventListener('pointerdown', handleStrike);
+targetBtn.addEventListener('pointerdown', handleMine);
+
+// Support touche Espace
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && e.target.tagName !== 'BUTTON') {
+    e.preventDefault();
+    handleMine(null);
+  }
+});
 
 refreshUI();

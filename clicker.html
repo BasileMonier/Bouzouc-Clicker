@@ -3,125 +3,151 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bouzouc Clicker</title>
+  <title>Bouzouc Clicker - Pixel Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
 </head>
 <body>
-  <!-- Fond briques de verre et réfraction lumineuse -->
-  <div class="glass-chamber"></div>
-  <div class="light-beams"></div>
 
-  <!-- RÉSEAU DE CONVOYEURS / TAPIS ROULANTS EN ARRIÈRE-PLAN -->
-  <div class="conveyor-network" aria-hidden="true">
-    <div class="conveyor-lane lane-left">
-      <div class="belt-ribs"></div>
-      <div id="lane-track-1" class="lane-track"></div>
+  <!-- CIEL DU SOIR VOXEL -->
+  <div class="voxel-world">
+    <!-- Soleil cubique -->
+    <div class="pixel-sun"></div>
+
+    <!-- Nuages cubiques étagés -->
+    <div class="pixel-cloud cloud-1"></div>
+    <div class="pixel-cloud cloud-2"></div>
+
+    <!-- Oiseaux carrés -->
+    <div id="pixel-birds" class="pixel-birds"></div>
+
+    <!-- Montagnes & Collines en blocs -->
+    <div class="mountain-layer distant"></div>
+    <div class="mountain-layer near"></div>
+
+    <!-- Piste de rails complète d'un bord à l'autre -->
+    <div class="minecart-track">
+      <div class="rail-ties"></div>
+      <div class="iron-rails"></div>
+      <!-- Wagonnets animés -->
+      <div id="cart-container" class="cart-container"></div>
     </div>
-    <div class="conveyor-lane lane-mid">
-      <div class="belt-ribs"></div>
-      <div id="lane-track-2" class="lane-track"></div>
-    </div>
-    <div class="conveyor-lane lane-right">
-      <div class="belt-ribs"></div>
-      <div id="lane-track-3" class="lane-track"></div>
+
+    <!-- Sol d'herbe cubique -->
+    <div class="grass-ground">
+      <div class="pixel-sheep"></div>
     </div>
   </div>
 
-  <!-- INTERFACE PRINCIPALE -->
-  <div class="app-layout">
-    <header class="masthead">
-      <div class="kicker">MANUFACTURE D'ÉMERAUDE</div>
+  <!-- INTERFACE DE JEU EN PIXELS -->
+  <div class="ui-layer">
+    <header class="game-header">
+      <div class="kicker">BOUZOUC CRAFT</div>
       <h1>BOUZOUC CLICKER</h1>
-      <p class="subtitle">Façonnez le verre taillé et approvisionnez les lignes de montage.</p>
+      <p class="subtitle">Mine l'émeraude sacrée et équipe ta manufacture cubique.</p>
     </header>
 
-    <main class="forge">
-      <div class="meter">
+    <main class="mining-zone">
+      <div class="pixel-scoreboard">
         <div id="counter" class="count">0</div>
-        <div class="unit">Zoucs extraits</div>
-        <div id="passive-rate" class="rate">0,0 / sec</div>
+        <div class="unit">ZOUCS MINÉS</div>
+        <div id="passive-rate" class="rate">+0 / SEC</div>
       </div>
 
-      <!-- Carreau central façon bloc de verre biseauté -->
-      <div class="tile-block">
-        <div class="tile-highlight"></div>
-        <button id="bouzouc" class="bouzouc-btn" aria-label="Frapper le Bouzouc"></button>
+      <!-- BLOC D'ÉMERAUDE CUBIQUE FAÇON MINECRAFT -->
+      <div class="emerald-voxel-wrapper">
+        <button id="bouzouc" class="emerald-voxel-btn" aria-label="Miner le bloc d'émeraude">
+          <div class="voxel-face top"></div>
+          <div class="voxel-face front"></div>
+        </button>
       </div>
     </main>
 
-    <footer class="bazaar">
-      <div class="bazaar-header">
-        <h2>Lignes de Production</h2>
-        <span class="sub-lead">Modules convoyés</span>
+    <!-- BOUTIQUE D'AMÉLIORATIONS FAÇON INVENTAIRE -->
+    <footer class="inventory-bazaar">
+      <div class="inventory-title">
+        <span>[ INVENTAIRE D'ATELIER ]</span>
+        <span class="sub">FORGE DE BLOCS</span>
       </div>
 
       <div class="catalog">
-        <button id="buy-click1" class="merch" disabled>
-          <div class="merch-meta">
-            <span class="merch-name">Burin de Faïencier</span>
-            <span class="merch-gain">+1 Zouc / frappe</span>
+        <button id="buy-click1" class="merch-slot" disabled>
+          <div class="slot-info">
+            <span class="slot-name">Pioche en Bois</span>
+            <span class="slot-gain">+1 / clic</span>
           </div>
-          <div class="merch-deal">
+          <div class="slot-deal">
             <span id="cost-click1" class="price">15</span>
             <span id="qty-click1" class="owned">x0</span>
           </div>
         </button>
 
-        <button id="buy-auto1" class="merch" disabled>
-          <div class="merch-meta">
-            <span class="merch-name">Robot Zouc Mk.I</span>
-            <span class="merch-gain">+1 Zouc / sec</span>
+        <button id="buy-auto1" class="merch-slot" disabled>
+          <div class="slot-info">
+            <span class="slot-name">Golem Ouvrier</span>
+            <span class="slot-gain">+1 / sec</span>
           </div>
-          <div class="merch-deal">
+          <div class="slot-deal">
             <span id="cost-auto1" class="price">30</span>
             <span id="qty-auto1" class="owned">x0</span>
           </div>
         </button>
 
-        <button id="buy-click2" class="merch" disabled>
-          <div class="merch-meta">
-            <span class="merch-name">Presse Émaillée</span>
-            <span class="merch-gain">+4 Zoucs / frappe</span>
+        <button id="buy-click2" class="merch-slot" disabled>
+          <div class="slot-info">
+            <span class="slot-name">Pioche en Fer</span>
+            <span class="slot-gain">+5 / clic</span>
           </div>
-          <div class="merch-deal">
+          <div class="slot-deal">
             <span id="cost-click2" class="price">120</span>
             <span id="qty-click2" class="owned">x0</span>
           </div>
         </button>
 
-        <button id="buy-auto2" class="merch" disabled>
-          <div class="merch-meta">
-            <span class="merch-name">Peloton Mécanique</span>
-            <span class="merch-gain">+8 Zoucs / sec</span>
+        <button id="buy-auto2" class="merch-slot" disabled>
+          <div class="slot-info">
+            <span class="slot-name">Fourneau Rouge</span>
+            <span class="slot-gain">+12 / sec</span>
           </div>
-          <div class="merch-deal">
-            <span id="cost-auto2" class="price">350</span>
+          <div class="slot-deal">
+            <span id="cost-auto2" class="price">400</span>
             <span id="qty-auto2" class="owned">x0</span>
           </div>
         </button>
 
-        <button id="buy-click3" class="merch" disabled>
-          <div class="merch-meta">
-            <span class="merch-name">Creuset de Quartz</span>
-            <span class="merch-gain">+20 Zoucs / frappe</span>
+        <button id="buy-click3" class="merch-slot" disabled>
+          <div class="slot-info">
+            <span class="slot-name">Pioche Diamant</span>
+            <span class="slot-gain">+35 / clic</span>
           </div>
-          <div class="merch-deal">
-            <span id="cost-click3" class="price">1 000</span>
+          <div class="slot-deal">
+            <span id="cost-click3" class="price">1 500</span>
             <span id="qty-click3" class="owned">x0</span>
           </div>
         </button>
 
-        <button id="buy-auto3" class="merch" disabled>
-          <div class="merch-meta">
-            <span class="merch-name">Haut-Fourneau Sacré</span>
-            <span class="merch-gain">+50 Zoucs / sec</span>
+        <button id="buy-auto3" class="merch-slot" disabled>
+          <div class="slot-info">
+            <span class="slot-name">Foreuse Antique</span>
+            <span class="slot-gain">+90 / sec</span>
           </div>
-          <div class="merch-deal">
-            <span id="cost-auto3" class="price">3 200</span>
+          <div class="slot-deal">
+            <span id="cost-auto3" class="price">5 000</span>
             <span id="qty-auto3" class="owned">x0</span>
+          </div>
+        </button>
+
+        <!-- OBJET ULTIME LÉGENDAIRE -->
+        <button id="buy-relic" class="merch-slot relic-slot" disabled>
+          <div class="slot-info">
+            <span class="slot-name gold-text">★ BALISE DE NÉTHÉRITE ★</span>
+            <span class="slot-gain relic-sub">+6 000/clic &amp; +1 200/sec</span>
+          </div>
+          <div class="slot-deal">
+            <span id="cost-relic" class="price gold-text">1 000 000</span>
+            <span id="qty-relic" class="owned">x0</span>
           </div>
         </button>
       </div>
