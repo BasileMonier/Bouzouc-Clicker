@@ -1,114 +1,106 @@
-// --- ÉTAT DU JEU ---
-let count = 0;
-let clickPower = 1;      // Nombre de zoucs par clic manuel
-let passivePerSec = 0;   // Nombre de zoucs auto par seconde
+// --- ÉTAT GLOBAL ---
+let zoucs = 0;
+let clickPower = 1;
+let passiveIncome = 0;
 
-// --- PRIX INITIAUX ---
-let costAutoclick = 15;
-let costMultiplier = 25;
-let costSuperclick = 100;
+// --- DÉFINITION DU CATALOGUE ---
+const catalog = {
+  click1: { baseCost: 15,    cost: 15,    gainClick: 1,  gainAuto: 0,  qty: 0, mult: 1.15 },
+  auto1:  { baseCost: 30,    cost: 30,    gainClick: 0,  gainAuto: 1,  qty: 0, mult: 1.15 },
+  click2: { baseCost: 120,   cost: 120,   gainClick: 4,  gainAuto: 0,  qty: 0, mult: 1.18 },
+  auto2:  { baseCost: 350,   cost: 350,   gainClick: 0,  gainAuto: 8,  qty: 0, mult: 1.18 },
+  click3: { baseCost: 1000,  cost: 1000,  gainClick: 20, gainAuto: 0,  qty: 0, mult: 1.22 },
+  auto3:  { baseCost: 3200,  cost: 3200,  gainClick: 0,  gainAuto: 50, qty: 0, mult: 1.25 }
+};
 
-// --- RÉCUPÉRATION DU DOM ---
+// --- RÉFÉRENCES DU DOM ---
 const counterEl = document.getElementById('counter');
 const passiveRateEl = document.getElementById('passive-rate');
-const btn = document.getElementById('bouzouc');
+const targetBtn = document.getElementById('bouzouc');
 
-const btnAutoclick = document.getElementById('buy-autoclick');
-const btnMultiplier = document.getElementById('buy-multiplier');
-const btnSuperclick = document.getElementById('buy-superclick');
+// Liaison dynamique des boutons du catalogue
+for (const key in catalog) {
+  catalog[key].btnEl = document.getElementById(`buy-${key}`);
+  catalog[key].costEl = document.getElementById(`cost-${key}`);
+  catalog[key].qtyEl = document.getElementById(`qty-${key}`);
 
-const costAutoclickEl = document.getElementById('cost-autoclick');
-const costMultiplierEl = document.getElementById('cost-multiplier');
-const costSuperclickEl = document.getElementById('cost-superclick');
-
-// --- AFFICHAGE FLOTTANT (+X) ---
-function createPopNumber(x, y, value) {
-  const el = document.createElement('div');
-  el.className = 'pop-number';
-  el.textContent = `+${value}`;
-  const randX = (Math.random() - 0.5) * 40;
-  el.style.left = `${x + randX}px`;
-  el.style.top = `${y}px`;
-  document.body.appendChild(el);
-
-  setTimeout(() => el.remove(), 700);
+  catalog[key].btnEl.addEventListener('click', () => buyItem(key));
 }
 
-// --- MISE À JOUR DE LA BOUTIQUE (ACTIVER / DÉSACTIVER) ---
-function updateShopUI() {
-  btnAutoclick.disabled = count < costAutoclick;
-  btnMultiplier.disabled = count < costMultiplier;
-  btnSuperclick.disabled = count < costSuperclick;
+// Formatage propre des nombres (espaces pour les milliers)
+function formatNum(num) {
+  return Math.floor(num).toLocaleString('fr-FR');
 }
 
-// --- MISE À JOUR DU SCORE GLOBAL ---
-function updateScoreUI() {
-  counterEl.textContent = Math.floor(count);
-  passiveRateEl.textContent = `+${passivePerSec} zouc/sec`;
-  updateShopUI();
+// Notification visuelle au clic (+X)
+function spawnParticle(x, y, amount) {
+  const node = document.createElement('div');
+  node.className = 'pop-number';
+  node.textContent = `+${amount}`;
+  const drift = (Math.random() - 0.5) * 30;
+  node.style.left = `${x + drift}px`;
+  node.style.top = `${y}px`;
+  document.body.appendChild(node);
+
+  setTimeout(() => node.remove(), 650);
 }
 
-// --- CLIC MANUEL SUR LE BOUZOUC ---
-function handleClick(e) {
-  count += clickPower;
-  updateScoreUI();
+// Mise à jour de l'affichage
+function refreshUI() {
+  counterEl.textContent = formatNum(zoucs);
+  passiveRateEl.textContent = `${formatNum(passiveIncome)} / sec`;
 
-  // Animation sursaut du score
-  counterEl.style.transform = 'scale(1.12)';
-  setTimeout(() => counterEl.style.transform = 'scale(1)', 60);
-
-  // Position du pop-up +X
-  const rect = btn.getBoundingClientRect();
-  const x = e.clientX || (rect.left + rect.width / 2);
-  const y = e.clientY || (rect.top + rect.height / 2);
-  createPopNumber(x, y, clickPower);
-}
-
-// --- ACHATS EN BOUTIQUE ---
-
-// 1. Robot Zouc (Auto-clicker)
-btnAutoclick.addEventListener('click', () => {
-  if (count >= costAutoclick) {
-    count -= costAutoclick;
-    passivePerSec += 1;
-    costAutoclick = Math.round(costAutoclick * 1.15); // +15% plus cher
-    costAutoclickEl.textContent = `${costAutoclick} Zoucs`;
-    updateScoreUI();
+  // Vérification de la disponibilité de chaque article
+  for (const key in catalog) {
+    const item = catalog[key];
+    item.btnEl.disabled = zoucs < item.cost;
+    item.costEl.textContent = formatNum(item.cost);
+    item.qtyEl.textContent = `x${item.qty}`;
   }
-});
+}
 
-// 2. Doigt Agile (+1 au clic)
-btnMultiplier.addEventListener('click', () => {
-  if (count >= costMultiplier) {
-    count -= costMultiplier;
-    clickPower += 1;
-    costMultiplier = Math.round(costMultiplier * 1.2);
-    costMultiplierEl.textContent = `${costMultiplier} Zoucs`;
-    updateScoreUI();
+// Frappe manuelle
+function handleStrike(e) {
+  zoucs += clickPower;
+  refreshUI();
+
+  // Animation sèche du chiffre
+  counterEl.style.transform = 'scale(1.08)';
+  setTimeout(() => counterEl.style.transform = 'scale(1)', 50);
+
+  const box = targetBtn.getBoundingClientRect();
+  const x = e.clientX || (box.left + box.width / 2);
+  const y = e.clientY || (box.top + box.height / 2);
+  spawnParticle(x, y, clickPower);
+}
+
+// Transaction boutique
+function buyItem(key) {
+  const item = catalog[key];
+  if (zoucs >= item.cost) {
+    zoucs -= item.cost;
+    item.qty += 1;
+    clickPower += item.gainClick;
+    passiveIncome += item.gainAuto;
+    item.cost = Math.round(item.cost * item.mult);
+    refreshUI();
   }
-});
+}
 
-// 3. Méga Tacle (+5 au clic)
-btnSuperclick.addEventListener('click', () => {
-  if (count >= costSuperclick) {
-    count -= costSuperclick;
-    clickPower += 5;
-    costSuperclick = Math.round(costSuperclick * 1.25);
-    costSuperclickEl.textContent = `${costSuperclick} Zoucs`;
-    updateScoreUI();
-  }
-});
-
-// --- BOUCLE TEMPORELLE (CLICS AUTOMATIQUES CHAQUE SECONDE) ---
+// Tics de production passive (10 fois par seconde pour la fluidité)
 setInterval(() => {
-  if (passivePerSec > 0) {
-    count += passivePerSec;
-    updateScoreUI();
+  if (passiveIncome > 0) {
+    zoucs += passiveIncome / 10;
+    counterEl.textContent = formatNum(zoucs);
+    // Vérifie si un bouton devient achetable
+    for (const key in catalog) {
+      catalog[key].btnEl.disabled = zoucs < catalog[key].cost;
+    }
   }
-}, 1000);
+}, 100);
 
-// Écouteur principal sur la tête
-btn.addEventListener('pointerdown', handleClick);
+// Écouteur tactile et souris
+targetBtn.addEventListener('pointerdown', handleStrike);
 
-// Initialisation au chargement
-updateScoreUI();
+// Démarrage
+refreshUI();
