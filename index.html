@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
+  <link rel="stylesheet" href="css/clicker.css?v=1.1">
 </head>
 <body id="sheet-body-element" class="view-hub">
 
@@ -81,6 +82,12 @@
             <span class="run-card-title">DÉPART DU TIRAGE</span>
             <p class="run-card-desc">Démarrez une expédition à 0 Zouc. Extrayez un maximum de ressources.</p>
             <button id="btn-launch-run" class="btn-primary-action launch-btn">LANCER LA RUN [DÉPART]</button>
+          </div>
+
+          <div class="start-run-card" style="border-color: #d32f2f; margin-bottom: 18px;">
+            <span class="run-card-title" style="color: #d32f2f;">ZONE DE MAINTENANCE</span>
+            <p class="run-card-desc">Efface définitivement la progression et réinitialise l'atelier à zéro.</p>
+            <button id="btn-hard-reset" class="btn-primary-action red-btn" style="background: #d32f2f; border-color: #111;">RÉINITIALISER LE JEU</button>
           </div>
 
           <div class="hub-shop-card">
@@ -211,7 +218,6 @@
     </main>
 
   </div>
-
-  <script src="JavaScript/script.js"></script>
+  <script src="JavaScript/script.js?v=1.1"></script>
 </body>
 </html>

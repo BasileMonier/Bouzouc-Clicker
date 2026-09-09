@@ -1,4 +1,10 @@
-// --- SYSTÈME DE SAUVEGARDE PERSISTANTE ---
+// --- SYSTÈME DE SAUVEGARDE PERSISTANTE & GESTION DE VERSION ---
+const GAME_VERSION = '1.1'; // Change cette valeur (ex: '1.2', '1.3') à chaque mise à jour majeure sur ton site
+
+if (localStorage.getItem('clac_version') !== GAME_VERSION) {
+  localStorage.removeItem('clac_roguelite_save'); // Efface l'ancienne sauvegarde si elle est incompatible avec la nouvelle version
+  localStorage.setItem('clac_version', GAME_VERSION);
+}
 let saved = {};
 try {
   saved = JSON.parse(localStorage.getItem('clac_roguelite_save') || '{}');
@@ -840,7 +846,15 @@ setInterval(() => {
 // ÉVÉNEMENTS DOM
 document.addEventListener('DOMContentLoaded', () => {
   initDomReferences();
-
+const btnHardReset = document.getElementById('btn-hard-reset');
+if (btnHardReset) {
+  btnHardReset.addEventListener('click', () => {
+    if (confirm("Voulez-vous vraiment tout effacer et recommencer à zéro ?")) {
+      localStorage.clear();
+      location.reload();
+    }
+  });
+}
   if (tabNavHub) tabNavHub.addEventListener('click', () => { if (!inRun) showView('hub'); });
   if (tabNavRun) tabNavRun.addEventListener('click', () => { if (inRun) showView('run'); });
   if (btnLaunchRun) btnLaunchRun.addEventListener('click', startNewRun);
