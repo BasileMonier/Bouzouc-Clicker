@@ -7,118 +7,247 @@
 }
 
 :root {
-  --tile-mortar: #131b16;
-  --tile-deep: #0a1f16;
-  --tile-mid: #153e2d;
-  --tile-bright: #2f7a55;
+  --grout: #06110a;
+  --tile-sage: #1b4231;
+  --tile-emerald: #0f3123;
+  --tile-mint: #255841;
+  --tile-amber: #4a3818;
   --gold: #d4af37;
-  --gold-dim: #8b7322;
-  --ink: #e8ede9;
-  --muted: #7e9185;
+  --ink: #eaf6ef;
+  --muted: #7fa490;
 }
 
 body {
   min-height: 100vh;
-  background-color: var(--tile-mortar);
-  /* Trame géométrique inspirée du carrelage de l'image */
-  background-image: 
-    linear-gradient(to right, rgba(0, 0, 0, 0.65) 2px, transparent 2px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 2px, transparent 2px),
-    radial-gradient(circle at 50% 30%, #174230 0%, #0c241a 45%, #050d09 100%);
-  background-size: 34px 34px, 34px 34px, 100% 100%;
+  background-color: var(--grout);
   color: var(--ink);
   font-family: 'Syne', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* ====================================================
+   FAÏENCE MURALE / CARRELAGE DE DOUCHE MULTI-VERTS
+   ==================================================== */
+.bathroom-tiles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Grille de carrelage émaillé (24px x 24px) avec joints gris sombres en creux */
+  background-color: #0b2117;
+  background-image:
+    /* Joints horizontaux et verticaux */
+    linear-gradient(to right, rgba(0, 0, 0, 0.95) 2px, transparent 2px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 2px, transparent 2px),
+    /* Variations de teintes par carreaux (alternance émeraude, jade et ambre) */
+    repeating-conic-gradient(#1a4432 0% 25%, #0f3022 0% 50%, #22563f 0% 75%, #143828 0% 100%),
+    radial-gradient(circle at 65% 25%, rgba(212, 175, 55, 0.22) 0%, transparent 60%);
+  background-size: 32px 32px, 32px 32px, 128px 128px, 100% 100%;
+}
+
+/* Effet vernis émaillé / film d'eau brillant */
+.water-glaze {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: 
+    linear-gradient(125deg, rgba(255, 255, 255, 0.12) 0%, transparent 35%, rgba(0, 0, 0, 0.6) 100%),
+    radial-gradient(circle at 50% 50%, transparent 50%, rgba(3, 10, 6, 0.8) 100%);
+}
+
+/* ====================================================
+   COLONNE D'ÉLÉVATEURS VERTICALE (À DROITE)
+   ==================================================== */
+.elevator-shaft {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 18px;
+  width: 76px;
+  z-index: 4;
+  background: rgba(6, 17, 11, 0.85);
+  border-left: 2px solid #234d38;
+  border-right: 2px solid #234d38;
+  box-shadow: 
+    inset 0 0 15px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+}
+
+.shaft-wire {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(212, 175, 55, 0.3) 0,
+    rgba(212, 175, 55, 0.3) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
+.elevator-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Capsule mécanique personnalisée (sans émoji) */
+.mech-pod {
+  position: absolute;
+  left: 8px;
+  width: 58px;
+  background: linear-gradient(145deg, #133324, #081a11);
+  border: 1px solid #387857;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.8),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.2);
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+}
+
+.mech-pod.move-up {
+  animation: ascend-pod linear infinite;
+}
+
+.mech-pod.move-down {
+  animation: descend-pod linear infinite;
+}
+
+.pod-icon {
+  width: 24px;
+  height: 24px;
+  fill: #6ee7b7;
+  filter: drop-shadow(0 0 4px rgba(110, 231, 183, 0.6));
+}
+
+.pod-tag {
+  font-family: 'Cinzel', serif;
+  font-size: 0.48rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+  text-align: center;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.pod-light {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+  margin-top: 1px;
+}
+
+@keyframes ascend-pod {
+  0%   { transform: translateY(105vh); }
+  100% { transform: translateY(-120px); }
+}
+
+@keyframes descend-pod {
+  0%   { transform: translateY(-120px); }
+  100% { transform: translateY(105vh); }
+}
+
+/* ====================================================
+   STRUCTURE CENTRALE DE L'APPLICATION
+   ==================================================== */
+.app-layout {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 860px;
+  padding: 24px 90px 24px 20px; /* Réserve 90px à droite pour ne pas toucher l'élévateur */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 36px 18px 28px;
-  overflow-x: hidden;
-  position: relative;
+  min-height: 100vh;
 }
 
-/* Léger voile d'émail brillant */
-.mosaic-overlay {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 40%, rgba(5, 12, 8, 0.75) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ============================
+/* ====================================================
    1. ENTÊTE
-   ============================ */
+   ==================================================== */
 .masthead {
-  position: relative;
-  z-index: 2;
   text-align: center;
-  max-width: 600px;
+  max-width: 620px;
 }
 
 .kicker {
   font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   letter-spacing: 4px;
   color: var(--gold);
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
 .masthead h1 {
   font-family: 'Cinzel', serif;
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   letter-spacing: 2px;
   font-weight: 900;
   color: #f1f8f3;
   text-transform: uppercase;
-  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.95);
 }
 
 .subtitle {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--muted);
-  line-height: 1.5;
-  margin-top: 6px;
-  letter-spacing: 0.3px;
+  margin-top: 4px;
+  line-height: 1.4;
 }
 
-/* ============================
-   2. FORGE (COMPTEUR + BOUTON)
-   ============================ */
+/* ====================================================
+   2. FORGE & CARREAU CENTRAL
+   ==================================================== */
 .forge {
-  position: relative;
-  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 18px 0;
+  margin: 12px 0;
 }
 
 .meter {
   text-align: center;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .count {
   font-family: 'Cinzel', serif;
-  font-size: 4.4rem;
+  font-size: 4.2rem;
   font-weight: 900;
   color: #ffffff;
   line-height: 1;
-  letter-spacing: -1px;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95), 0 0 20px rgba(52, 211, 153, 0.3);
   transition: transform 0.05s ease;
 }
 
 .unit {
   font-family: 'Cinzel', serif;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--gold);
   font-weight: 700;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .rate {
@@ -126,58 +255,66 @@ body {
   color: var(--muted);
   font-weight: 700;
   letter-spacing: 1px;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
-/* Cadre façon carreau de mosaïque individuel */
-.tile-frame {
-  padding: 10px;
-  background: #11261c;
-  border: 2px solid #234d39;
+/* Carreau faïencé central */
+.tile-block {
+  position: relative;
+  padding: 12px;
+  background: linear-gradient(135deg, #1b4d36 0%, #0c261b 60%, #05140d 100%);
+  border: 2px solid #2f6f4e;
   box-shadow: 
-    inset 0 0 10px rgba(0, 0, 0, 0.8),
-    0 12px 30px rgba(0, 0, 0, 0.8);
+    0 16px 40px rgba(0, 0, 0, 0.9),
+    inset 2px 2px 2px rgba(255, 255, 255, 0.25),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.tile-highlight {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .bouzouc-btn {
-  width: 190px;
-  height: 190px;
-  border-radius: 0; /* Forme carrée nette pour épouser la mosaïque */
-  border: 1px solid #3c7d5c;
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: 0;
+  border: 1px solid #163d2a;
   background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c2/N%27Golo_Kant%C3%A9_2018.jpg');
   background-size: 135%;
   background-position: center 20%;
   background-repeat: no-repeat;
   cursor: pointer;
   display: block;
-  outline: none;
-  filter: contrast(1.05) saturate(0.9);
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+  filter: contrast(1.1) brightness(0.95);
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
   transition: transform 0.06s ease, filter 0.15s ease;
   touch-action: manipulation;
 }
 
 .bouzouc-btn:hover {
-  filter: contrast(1.1) brightness(1.08);
+  filter: contrast(1.15) brightness(1.08);
 }
 
 .bouzouc-btn:active {
-  transform: scale(0.96);
-  filter: brightness(0.9);
+  transform: scale(0.95);
 }
 
-/* ============================
-   3. BAZAAR (BOUTIQUE)
-   ============================ */
+/* ====================================================
+   3. CATALOGUE DE BOUTIQUE
+   ==================================================== */
 .bazaar {
-  position: relative;
-  z-index: 2;
   width: 100%;
-  max-width: 900px;
-  background: rgba(9, 21, 15, 0.88);
-  border: 1px solid rgba(47, 122, 85, 0.35);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
-  padding: 18px 20px;
+  background: rgba(7, 18, 12, 0.94);
+  border: 1px solid #1f4834;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+  padding: 14px 18px;
 }
 
 .bazaar-header {
@@ -185,13 +322,13 @@ body {
   justify-content: space-between;
   align-items: baseline;
   border-bottom: 1px solid rgba(47, 122, 85, 0.3);
-  padding-bottom: 10px;
-  margin-bottom: 14px;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .bazaar-header h2 {
   font-family: 'Cinzel', serif;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #f1f8f3;
@@ -199,10 +336,10 @@ body {
 }
 
 .sub-lead {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
 }
 
 .catalog {
@@ -212,22 +349,23 @@ body {
 }
 
 .merch {
-  background: #0d2118;
-  border: 1px solid #1c4432;
-  padding: 10px 12px;
+  background: linear-gradient(135deg, #10291d 0%, #081710 100%);
+  border: 1px solid #204b34;
+  padding: 9px 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: left;
   cursor: pointer;
-  min-height: 74px;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+  min-height: 72px;
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+  transition: all 0.12s ease;
 }
 
 .merch:hover:not(:disabled) {
-  background: #143527;
-  border-color: #3b8b64;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #163d2a 0%, #0d251a 100%);
+  border-color: #408d64;
+  transform: translateY(-2px);
 }
 
 .merch:active:not(:disabled) {
@@ -237,37 +375,37 @@ body {
 .merch:disabled {
   opacity: 0.32;
   cursor: not-allowed;
-  border-color: #15251e;
-  background: #08140f;
+  border-color: #112219;
+  background: #060e0a;
 }
 
 .merch-meta {
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .merch-name {
   font-family: 'Cinzel', serif;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.5px;
 }
 
 .merch-gain {
-  font-size: 0.7rem;
-  color: #6da387;
+  font-size: 0.68rem;
+  color: #639c7f;
   font-weight: 700;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .merch-deal {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 5px;
 }
 
 .price {
@@ -289,68 +427,39 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* ============================
-   4. PARTICULES FLOTTANTES
-   ============================ */
+/* Particules au clic */
 .pop-number {
   position: fixed;
   pointer-events: none;
   font-family: 'Cinzel', serif;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 900;
   color: var(--gold);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
   z-index: 100;
   animation: float-ascend 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 @keyframes float-ascend {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) translateY(0) scale(0.9);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) translateY(-45px) scale(1.1);
-  }
+  0%   { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(0.9); }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-45px) scale(1.1); }
 }
 
-/* ============================
-   5. ÉCRANS ÉTROITS (MOBILE)
-   ============================ */
+/* Version mobile */
 @media (max-width: 720px) {
-  body {
-    padding: 20px 12px;
+  .elevator-shaft {
+    width: 48px;
+    right: 4px;
   }
-
-  .masthead h1 {
-    font-size: 1.8rem;
+  .app-layout {
+    padding: 16px 56px 16px 10px;
   }
-
-  .count {
-    font-size: 3.2rem;
-  }
-
-  .bouzouc-btn {
-    width: 155px;
-    height: 155px;
-  }
-
-  .catalog {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .merch {
-    flex-direction: row;
-    align-items: center;
-    min-height: auto;
-    padding: 10px;
-  }
-
-  .merch-deal {
-    border-top: none;
-    padding-top: 0;
-    gap: 12px;
-  }
+  .masthead h1 { font-size: 1.7rem; }
+  .count { font-size: 3rem; }
+  .bouzouc-btn { width: 145px; height: 145px; }
+  .catalog { grid-template-columns: 1fr; gap: 7px; }
+  .merch { flex-direction: row; align-items: center; min-height: auto; padding: 8px 10px; }
+  .merch-deal { border-top: none; padding-top: 0; gap: 8px; }
+  .mech-pod { width: 38px; left: 4px; }
+  .pod-tag { font-size: 0.4rem; }
 }

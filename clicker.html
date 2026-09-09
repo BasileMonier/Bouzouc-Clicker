@@ -6,110 +6,119 @@
   <title>Bouzouc Clicker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
 </head>
 <body>
-  <div class="mosaic-overlay"></div>
+  <!-- Mosaïque de faïence murale & reflet humide -->
+  <div class="bathroom-tiles"></div>
+  <div class="water-glaze"></div>
 
-  <header class="masthead">
-    <div class="kicker">BOUZOUC WORKSHOP</div>
-    <h1>BOUZOUC CLICKER</h1>
-    <p class="subtitle">Façonnez les carreaux sacrés, amassez les Zoucs et bâtissez votre domaine.</p>
-  </header>
-
-  <main class="forge">
-    <div class="meter">
-      <div id="counter" class="count">0</div>
-      <div class="unit">Zoucs récoltés</div>
-      <div id="passive-rate" class="rate">0,0 / sec</div>
+  <!-- COLONNE VERTICALE D'UNITÉS (À DROITE) -->
+  <aside class="elevator-shaft" aria-label="Colonne mécanique">
+    <div class="shaft-wire"></div>
+    <div id="elevator-track" class="elevator-track">
+      <!-- Les modules SVG injectés défilent ici du bas vers le haut -->
     </div>
+  </aside>
 
-    <div class="tile-frame">
-      <button id="bouzouc" class="bouzouc-btn" aria-label="Frapper le Bouzouc"></button>
-    </div>
-  </main>
+  <!-- CONTENU CENTRAL -->
+  <div class="app-layout">
+    <header class="masthead">
+      <div class="kicker">MANUFACTURE D'ÉMERAUDE</div>
+      <h1>BOUZOUC CLICKER</h1>
+      <p class="subtitle">Extrayez les Zoucs, taillez l'émail et bâtissez votre atelier.</p>
+    </header>
 
-  <footer class="bazaar">
-    <div class="bazaar-header">
-      <h2>Comptoir des Améliorations</h2>
-      <span class="sub-lead">Acquisitions permanentes</span>
-    </div>
+    <main class="forge">
+      <div class="meter">
+        <div id="counter" class="count">0</div>
+        <div class="unit">Zoucs extraits</div>
+        <div id="passive-rate" class="rate">0,0 / sec</div>
+      </div>
 
-    <div class="catalog">
-      <!-- Article 1 -->
-      <button id="buy-click1" class="merch" disabled>
-        <div class="merch-meta">
-          <span class="merch-name">Petit Tacle</span>
-          <span class="merch-gain">+1 Zouc / frappe</span>
-        </div>
-        <div class="merch-deal">
-          <span id="cost-click1" class="price">15</span>
-          <span id="qty-click1" class="owned">x0</span>
-        </div>
-      </button>
+      <!-- Carreau de faïence central taillé en biseau -->
+      <div class="tile-block">
+        <div class="tile-highlight"></div>
+        <button id="bouzouc" class="bouzouc-btn" aria-label="Frapper le Bouzouc"></button>
+      </div>
+    </main>
 
-      <!-- Article 2 -->
-      <button id="buy-auto1" class="merch" disabled>
-        <div class="merch-meta">
-          <span class="merch-name">Robot Zouc</span>
-          <span class="merch-gain">+1 Zouc / sec</span>
-        </div>
-        <div class="merch-deal">
-          <span id="cost-auto1" class="price">30</span>
-          <span id="qty-auto1" class="owned">x0</span>
-        </div>
-      </button>
+    <footer class="bazaar">
+      <div class="bazaar-header">
+        <h2>Atelier &amp; Outillage</h2>
+        <span class="sub-lead">Modules mécaniques</span>
+      </div>
 
-      <!-- Article 3 -->
-      <button id="buy-click2" class="merch" disabled>
-        <div class="merch-meta">
-          <span class="merch-name">Tibia en Céramique</span>
-          <span class="merch-gain">+4 Zoucs / frappe</span>
-        </div>
-        <div class="merch-deal">
-          <span id="cost-click2" class="price">120</span>
-          <span id="qty-click2" class="owned">x0</span>
-        </div>
-      </button>
+      <div class="catalog">
+        <button id="buy-click1" class="merch" disabled>
+          <div class="merch-meta">
+            <span class="merch-name">Burin de Faïencier</span>
+            <span class="merch-gain">+1 Zouc / frappe</span>
+          </div>
+          <div class="merch-deal">
+            <span id="cost-click1" class="price">15</span>
+            <span id="qty-click1" class="owned">x0</span>
+          </div>
+        </button>
 
-      <!-- Article 4 -->
-      <button id="buy-auto2" class="merch" disabled>
-        <div class="merch-meta">
-          <span class="merch-name">Peloton de Zoucs</span>
-          <span class="merch-gain">+8 Zoucs / sec</span>
-        </div>
-        <div class="merch-deal">
-          <span id="cost-auto2" class="price">350</span>
-          <span id="qty-auto2" class="owned">x0</span>
-        </div>
-      </button>
+        <button id="buy-auto1" class="merch" disabled>
+          <div class="merch-meta">
+            <span class="merch-name">Robot Zouc Mk.I</span>
+            <span class="merch-gain">+1 Zouc / sec</span>
+          </div>
+          <div class="merch-deal">
+            <span id="cost-auto1" class="price">30</span>
+            <span id="qty-auto1" class="owned">x0</span>
+          </div>
+        </button>
 
-      <!-- Article 5 -->
-      <button id="buy-click3" class="merch" disabled>
-        <div class="merch-meta">
-          <span class="merch-name">Marathon Émeraude</span>
-          <span class="merch-gain">+20 Zoucs / frappe</span>
-        </div>
-        <div class="merch-deal">
-          <span id="cost-click3" class="price">1 000</span>
-          <span id="qty-click3" class="owned">x0</span>
-        </div>
-      </button>
+        <button id="buy-click2" class="merch" disabled>
+          <div class="merch-meta">
+            <span class="merch-name">Presse Émaillée</span>
+            <span class="merch-gain">+4 Zoucs / frappe</span>
+          </div>
+          <div class="merch-deal">
+            <span id="cost-click2" class="price">120</span>
+            <span id="qty-click2" class="owned">x0</span>
+          </div>
+        </button>
 
-      <!-- Article 6 -->
-      <button id="buy-auto3" class="merch" disabled>
-        <div class="merch-meta">
-          <span class="merch-name">Temple du Bouzouc</span>
-          <span class="merch-gain">+50 Zoucs / sec</span>
-        </div>
-        <div class="merch-deal">
-          <span id="cost-auto3" class="price">3 200</span>
-          <span id="qty-auto3" class="owned">x0</span>
-        </div>
-      </button>
-    </div>
-  </footer>
+        <button id="buy-auto2" class="merch" disabled>
+          <div class="merch-meta">
+            <span class="merch-name">Peloton Mécanique</span>
+            <span class="merch-gain">+8 Zoucs / sec</span>
+          </div>
+          <div class="merch-deal">
+            <span id="cost-auto2" class="price">350</span>
+            <span id="qty-auto2" class="owned">x0</span>
+          </div>
+        </button>
+
+        <button id="buy-click3" class="merch" disabled>
+          <div class="merch-meta">
+            <span class="merch-name">Creuset de Quartz</span>
+            <span class="merch-gain">+20 Zoucs / frappe</span>
+          </div>
+          <div class="merch-deal">
+            <span id="cost-click3" class="price">1 000</span>
+            <span id="qty-click3" class="owned">x0</span>
+          </div>
+        </button>
+
+        <button id="buy-auto3" class="merch" disabled>
+          <div class="merch-meta">
+            <span class="merch-name">Haut-Fourneau Sacré</span>
+            <span class="merch-gain">+50 Zoucs / sec</span>
+          </div>
+          <div class="merch-deal">
+            <span id="cost-auto3" class="price">3 200</span>
+            <span id="qty-auto3" class="owned">x0</span>
+          </div>
+        </button>
+      </div>
+    </footer>
+  </div>
 
   <script src="JavaScript/script.js"></script>
 </body>
