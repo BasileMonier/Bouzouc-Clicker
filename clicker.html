@@ -3,88 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bouzouc Prism Clicker</title>
+  <title>Bouzouc Liquid Glass</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
 </head>
 <body class="realm-glass-1">
 
-  <!-- Mur de briques de verre texturé -->
-  <div class="glass-wall-back"></div>
-  <div class="sun-glare-prism"></div>
+  <!-- FOND LIQUID GLASS CHROMATIQUE -->
+  <div class="liquid-canvas">
+    <div class="glass-ribbon ribbon-1"></div>
+    <div class="glass-ribbon ribbon-2"></div>
+    <div class="specular-caustic"></div>
+  </div>
+
+  <!-- LIGNE DE WAGONNETS EN BAS -->
+  <div class="translucent-track">
+    <div class="track-rail"></div>
+    <div id="cart-convoy" class="cart-convoy"></div>
+  </div>
 
   <div class="main-interface">
     
-    <!-- SECTION CENTRALE DU JEU -->
-    <main class="core-stage">
+    <!-- ZONE CENTRALE DU JEU -->
+    <main class="stage-viewport">
       <header class="realm-header">
-        <div class="realm-tag" id="active-realm-tag">Secteur I — Manufacture Émeraude</div>
-        <h1>BOUZOUC ATELIER</h1>
+        <div class="realm-pill" id="active-realm-tag">Secteur I — Nectar Émeraude</div>
+        <h1>BOUZOUC GLASS</h1>
       </header>
 
-      <!-- Compteur Prisme Lumineux Original -->
-      <div class="prism-meter-card">
-        <div class="meter-orb-glow"></div>
-        <div class="meter-inner">
-          <span class="meter-label">ZOUCS CRISTALLISÉS</span>
-          <div id="counter" class="meter-digital">0</div>
-          <div class="meter-footer">
-            <span id="passive-rate" class="rate-badge">+0,0 Z/s</span>
-            <span class="purity-badge">Flux 100%</span>
-          </div>
+      <!-- Compteur en gélule de verre satiné -->
+      <div class="liquid-meter">
+        <div class="meter-glare"></div>
+        <span class="meter-caption">RÉSERVOIR DE ZOUCS</span>
+        <div id="counter" class="meter-val">0</div>
+        <div class="meter-sub">
+          <span id="passive-rate" class="rate-indicator">+0,0 Z/sec</span>
+          <span class="viscosity-tag">Flux Stable</span>
         </div>
       </div>
 
-      <!-- Bouton parfaitement centré -->
-      <div class="focal-zone">
-        <div class="glass-keystone" id="keystone-container">
-          <button id="bouzouc-main" class="bouzouc-tile-btn" aria-label="Frapper le Bouzouc"></button>
-          <button id="bouzouc-second" class="bouzouc-tile-btn duo-tile hidden" aria-label="Second bloc Bouzouc"></button>
+      <!-- BOUTON UNIQUE PARFAITEMENT CENTRÉ -->
+      <div class="focal-center">
+        <div class="liquid-core-chassis">
+          <div class="liquid-glare-ring"></div>
+          <button id="bouzouc-main" class="bouzouc-liquid-btn" aria-label="Frapper le Bouzouc"></button>
         </div>
       </div>
     </main>
 
-    <!-- PANNEAU DROIT : CONFIGURATION & BOUTIQUE LIQUIDE -->
+    <!-- PANNEAU DROIT LIQUID GLASS -->
     <aside class="liquid-dock">
-      <div class="dock-backdrop"></div>
-
       <div class="dock-header">
         <h2>Atelier &amp; Territoires</h2>
-        <span class="dock-indicator">Actif</span>
+        <span class="status-dot">Actif</span>
       </div>
 
-      <!-- Frise des Mondes à Débloquer -->
-      <section class="realm-hub">
-        <span class="panel-section-title">PROGRESSION DES MONDES</span>
-        <div class="realm-cards-strip">
-          <button id="realm-btn-1" class="realm-card is-active">
-            <span class="r-num">MONDE 01</span>
-            <span class="r-title">Verrière Émeraude</span>
-            <span class="r-status">Actuel</span>
+      <!-- Frise des Mondes -->
+      <section class="realm-deck">
+        <span class="deck-title">SECTEURS À DÉBLOQUER</span>
+        <div class="realm-tabs">
+          <button id="realm-btn-1" class="realm-tab is-active">
+            <span class="tab-sec">SECTEUR 01</span>
+            <span class="tab-name">Nectar Émeraude</span>
+            <span class="tab-state">Actuel</span>
           </button>
 
-          <button id="realm-btn-2" class="realm-card is-locked">
-            <span class="r-num">MONDE 02</span>
-            <span class="r-title">Crypte d'Ambre</span>
-            <span class="r-status">Requis : 150 000 Z</span>
+          <button id="realm-btn-2" class="realm-tab is-locked">
+            <span class="tab-sec">SECTEUR 02</span>
+            <span class="tab-name">Ambre Solaire</span>
+            <span class="tab-state">Requis : 150 000 Z</span>
           </button>
 
-          <button id="realm-btn-3" class="realm-card is-locked">
-            <span class="r-num">MONDE 03</span>
-            <span class="r-title">Noyau de Cobalt</span>
-            <span class="r-status">Requis : 2 500 000 Z</span>
+          <button id="realm-btn-3" class="realm-tab is-locked">
+            <span class="tab-sec">SECTEUR 03</span>
+            <span class="tab-name">Saphir Fluide</span>
+            <span class="tab-state">Requis : 2 500 000 Z</span>
           </button>
         </div>
       </section>
 
-      <!-- Liste d'Achats sans saut d'affichage -->
-      <section class="shelf-container">
-        <span class="panel-section-title">AMÉLIORATIONS DISPONIBLES</span>
-        <div id="shop-catalog" class="shop-catalog">
-          <!-- Les cartes sont instanciées de façon stable sans scintillement -->
-        </div>
+      <!-- Catalogue sans sauts au clic -->
+      <section class="store-deck">
+        <span class="deck-title">CATALOGUE DES MODULES</span>
+        <div id="shop-catalog" class="shop-catalog"></div>
       </section>
     </aside>
 

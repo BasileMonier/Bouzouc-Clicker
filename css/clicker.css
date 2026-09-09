@@ -7,228 +7,348 @@
 }
 
 :root {
-  --mortar: #040d07;
-  --emerald-edge: #235c3d;
-  --emerald-specular: rgba(167, 243, 208, 0.45);
+  --lime-top: #e2f5b5;
+  --lime-mid: #a6e32d;
+  --lime-dark: #4b880d;
   --gold: #f59e0b;
   --gold-glow: #fbbf24;
-  --glass-dock: rgba(7, 20, 13, 0.72);
-  --glass-border: rgba(52, 211, 153, 0.22);
+  --dock-bg: rgba(12, 28, 14, 0.48);
+  --dock-border: rgba(255, 255, 255, 0.28);
 }
 
 body {
   min-height: 100vh;
-  background-color: var(--mortar);
-  color: #f1f8f3;
+  color: #ffffff;
   font-family: 'Syne', sans-serif;
   overflow: hidden;
+  background-color: #0b1a0e;
 }
 
 /* ====================================================
-   DÉCOR DES CARREAUX DE VERRE ÉMERAUDE (IMAGE MODÈLE)
+   FOND LIQUID GLASS BIO-ORGANIQUE (IMAGE MODÈLE)
    ==================================================== */
-.glass-wall-back {
+.liquid-canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-color: #05140b;
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.96) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.96) 4px, transparent 4px),
-    radial-gradient(circle at 35% 30%, rgba(52, 211, 153, 0.35) 0%, transparent 55%),
-    repeating-linear-gradient(135deg, #0d3822 0 12px, #082617 12px 24px);
-  background-size: 58px 58px, 58px 58px, 100% 100%, 100% 100%;
+  background: radial-gradient(circle at 10% 15%, #dff7a6 0%, #a2e42a 40%, #2f690c 75%, #0d2107 100%);
+  overflow: hidden;
 }
 
-.sun-glare-prism {
-  position: fixed;
+.glass-ribbon {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+/* Courbure en verre liquide vert pomme */
+.ribbon-1 {
+  width: 140vw;
+  height: 140vw;
+  top: -40vw;
+  left: -20vw;
+  border: 45px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    inset 0 0 80px rgba(255, 255, 255, 0.6),
+    inset 0 0 120px rgba(75, 136, 13, 0.9),
+    0 40px 90px rgba(5, 18, 4, 0.7);
+  background: radial-gradient(circle at 45% 45%, rgba(200, 255, 120, 0.45) 0%, rgba(55, 120, 15, 0.2) 70%, transparent 100%);
+}
+
+.ribbon-2 {
+  width: 90vw;
+  height: 90vw;
+  bottom: -30vw;
+  left: 5vw;
+  border: 35px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    inset 0 0 60px rgba(255, 255, 255, 0.5),
+    0 25px 60px rgba(0, 0, 0, 0.6);
+  background: radial-gradient(circle at 50% 50%, rgba(160, 235, 45, 0.35) 0%, transparent 65%);
+}
+
+.specular-caustic {
+  position: absolute;
   inset: 0;
-  z-index: 1;
-  pointer-events: none;
   background: 
-    radial-gradient(circle at 60% 40%, rgba(251, 191, 36, 0.18) 0%, transparent 60%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
+    radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%, rgba(0, 0, 0, 0.6) 100%);
 }
 
-/* Thème Monde 2 (Ambre) */
-body.realm-glass-2 .glass-wall-back {
-  background-color: #170e04;
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.96) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.96) 4px, transparent 4px),
-    radial-gradient(circle at 35% 30%, rgba(245, 158, 11, 0.35) 0%, transparent 55%),
-    repeating-linear-gradient(135deg, #3d2408 0 12px, #241404 12px 24px);
+/* Mondes alternatifs */
+body.realm-glass-2 .liquid-canvas {
+  background: radial-gradient(circle at 10% 15%, #fed7aa 0%, #f97316 40%, #7c2d12 75%, #1c0a04 100%);
 }
-
-/* Thème Monde 3 (Cobalt) */
-body.realm-glass-3 .glass-wall-back {
-  background-color: #030d17;
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.96) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.96) 4px, transparent 4px),
-    radial-gradient(circle at 35% 30%, rgba(56, 189, 248, 0.35) 0%, transparent 55%),
-    repeating-linear-gradient(135deg, #08293d 0 12px, #041724 12px 24px);
+body.realm-glass-3 .liquid-canvas {
+  background: radial-gradient(circle at 10% 15%, #bae6fd 0%, #0284c7 40%, #0c4a6e 75%, #04141f 100%);
 }
 
 /* ====================================================
-   INTERFACE & SPLIT SCREEN
+   LIGNE DE WAGONS EN BAS DE L'ÉCRAN
+   ==================================================== */
+.translucent-track {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 440px;
+  height: 48px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.12) 100%);
+  border-top: 2px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.track-rail {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.1));
+}
+
+.cart-convoy {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.liquid-cart {
+  position: absolute;
+  top: 6px;
+  width: 36px;
+  height: 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: roll-track linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-crystal {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  box-shadow: 0 0 6px currentColor;
+}
+
+@keyframes roll-track {
+  0%   { transform: translateX(-50px); }
+  100% { transform: translateX(calc(100vw - 420px)); }
+}
+
+/* ====================================================
+   INTERFACE & DISPOSITION
    ==================================================== */
 .main-interface {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   width: 100vw;
   height: 100vh;
 }
 
-.core-stage {
+.stage-viewport {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 30px 24px;
+  padding: 30px 24px 70px;
 }
 
 .realm-header {
   text-align: center;
 }
 
-.realm-tag {
+.realm-pill {
   font-family: 'Cinzel', serif;
   font-size: 0.72rem;
-  letter-spacing: 3px;
-  color: var(--gold-glow);
-  text-transform: uppercase;
-  margin-bottom: 4px;
+  letter-spacing: 2.5px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-block;
+  margin-bottom: 6px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .realm-header h1 {
   font-family: 'Cinzel', serif;
-  font-size: 2.2rem;
+  font-size: 2.3rem;
   letter-spacing: 2px;
   font-weight: 900;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* ====================================================
-   COMPTEUR PRISME LUMINEUX (DESIGN ORIGINAL)
-   ==================================================== */
-.prism-meter-card {
+/* COMPTEUR EN GÉLULE DE VERRE LIQUIDE */
+.liquid-meter {
   position: relative;
-  background: rgba(9, 28, 18, 0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(52, 211, 153, 0.35);
-  border-radius: 18px;
-  padding: 16px 36px;
-  box-shadow: 
-    0 18px 45px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 30px;
+  padding: 14px 44px;
   text-align: center;
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
-.meter-orb-glow {
+.meter-glare {
   position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 25px;
-  background: radial-gradient(circle, rgba(52, 211, 153, 0.5) 0%, transparent 70%);
-  filter: blur(10px);
+  top: 3px;
+  left: 15%;
+  right: 15%;
+  height: 38%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, transparent 100%);
+  border-radius: 20px;
+  pointer-events: none;
 }
 
-.meter-label {
+.meter-caption {
   font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 3px;
-  color: #a7f3d0;
-  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  color: #f1f8e9;
+  font-weight: 800;
 }
 
-.meter-digital {
+.meter-val {
   font-family: 'Cinzel', serif;
   font-size: 3.4rem;
   font-weight: 900;
   line-height: 1.1;
   color: #ffffff;
-  text-shadow: 0 0 25px rgba(52, 211, 153, 0.45);
-  margin: 4px 0;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.4);
+  margin: 2px 0;
 }
 
-.meter-footer {
+.meter-sub {
   display: flex;
   justify-content: center;
   gap: 12px;
   align-items: center;
-  margin-top: 4px;
 }
 
-.rate-badge {
+.rate-indicator {
   font-size: 0.8rem;
   font-weight: 800;
   color: var(--gold-glow);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-.purity-badge {
+.viscosity-tag {
   font-size: 0.68rem;
-  color: #6ee7b7;
-  border: 1px solid rgba(110, 231, 183, 0.3);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   padding: 2px 8px;
   border-radius: 20px;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* ====================================================
-   BOUTON CENTRÉ ET EN RELIEF FAÇON CARREAU
+   BOUTON UNIQUE PARFAITEMENT RECENTRÉ EN HAUTEUR
    ==================================================== */
-.focal-zone {
+.focal-center {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
 }
 
-.glass-keystone {
-  display: flex;
-  gap: 20px;
-  padding: 14px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(10, 30, 19, 0.8) 100%);
-  border: 2px solid var(--emerald-edge);
+.liquid-core-chassis {
+  position: relative;
+  padding: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 70%);
+  border: 2px solid rgba(255, 255, 255, 0.6);
   box-shadow: 
-    0 25px 60px rgba(0, 0, 0, 0.95),
-    inset 2px 2px 4px var(--emerald-specular),
-    inset -3px -3px 6px rgba(0, 0, 0, 0.8);
+    0 25px 60px rgba(0, 0, 0, 0.4),
+    inset 0 0 25px rgba(255, 255, 255, 0.45);
 }
 
-.bouzouc-tile-btn {
-  width: 175px;
-  height: 175px;
+.liquid-glare-ring {
+  position: absolute;
+  top: 4px;
+  left: 12px;
+  right: 12px;
+  height: 45%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.bouzouc-liquid-btn {
+  width: 185px;
+  height: 185px;
+  border-radius: 50%;
   cursor: pointer;
   outline: none;
-  border: 1px solid #143825;
+  border: 2px solid rgba(255, 255, 255, 0.7);
   background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c2/N%27Golo_Kant%C3%A9_2018.jpg');
   background-size: 135%;
   background-position: center 20%;
   background-repeat: no-repeat;
-  filter: contrast(1.1) brightness(0.95);
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
-  transition: transform 0.05s ease;
+  filter: contrast(1.08) brightness(1.02);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.45);
+  transition: transform 0.05s ease, filter 0.15s ease;
   touch-action: manipulation;
 }
 
-.bouzouc-tile-btn:active {
-  transform: scale(0.94);
+.bouzouc-liquid-btn:hover {
+  filter: contrast(1.12) brightness(1.08);
 }
 
-.bouzouc-tile-btn.duo-tile {
-  filter: contrast(1.1) sepia(0.3) hue-rotate(180deg);
+.bouzouc-liquid-btn:active {
+  transform: scale(0.93);
 }
 
-.bouzouc-tile-btn.hidden {
-  display: none;
+/* ====================================================
+   BULLE BONUS FLOTTANTE INTERACTIVE (4 CLICS)
+   ==================================================== */
+.floating-glass-bubble {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  z-index: 50;
+  cursor: pointer;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(245, 158, 11, 0.6) 50%, rgba(180, 83, 9, 0.8) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6), inset 0 0 15px #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: float-traverse linear forwards;
+  touch-action: manipulation;
+}
+
+.bubble-hits-pill {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px #000;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+@keyframes float-traverse {
+  0%   { transform: translate(-100px, 60vh) scale(0.8); }
+  50%  { transform: translate(45vw, 20vh) scale(1.1); }
+  100% { transform: translate(calc(100vw - 440px), -100px) scale(0.9); }
 }
 
 /* ====================================================
@@ -237,12 +357,11 @@ body.realm-glass-3 .glass-wall-back {
 .liquid-dock {
   width: 440px;
   height: 100vh;
-  position: relative;
-  background: var(--glass-dock);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-left: 1px solid var(--glass-border);
-  box-shadow: -12px 0 45px rgba(0, 0, 0, 0.6);
+  background: var(--dock-bg);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-left: 1.5px solid var(--dock-border);
+  box-shadow: -15px 0 50px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   padding: 24px 20px;
@@ -252,49 +371,51 @@ body.realm-glass-3 .glass-wall-back {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 12px;
   margin-bottom: 16px;
 }
 
 .dock-header h2 {
   font-family: 'Cinzel', serif;
-  font-size: 1rem;
-  color: #fff;
-  letter-spacing: 1px;
+  font-size: 1.05rem;
+  font-weight: 800;
 }
 
-.dock-indicator {
+.status-dot {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #34d399;
-  text-transform: uppercase;
+  color: #e2f5b5;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.panel-section-title {
+.deck-title {
   display: block;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 2px;
-  color: #84a994;
+  color: #e2f5b5;
   margin-bottom: 8px;
 }
 
 /* FRISE DES MONDES */
-.realm-hub {
+.realm-deck {
   margin-bottom: 18px;
 }
 
-.realm-cards-strip {
+.realm-tabs {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.realm-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+.realm-tab {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
   padding: 8px 12px;
   display: flex;
   justify-content: space-between;
@@ -303,39 +424,40 @@ body.realm-glass-3 .glass-wall-back {
   font-family: inherit;
   color: #fff;
   text-align: left;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: all 0.2s ease;
 }
 
-.realm-card.is-active {
-  background: rgba(52, 211, 153, 0.15);
-  border-color: #34d399;
+.realm-tab.is-active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fff;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.3);
 }
 
-.realm-card.is-locked {
+.realm-tab.is-locked {
   opacity: 0.45;
   cursor: not-allowed;
   border-style: dashed;
 }
 
-.r-num {
+.tab-sec {
   font-family: 'Cinzel', serif;
   font-size: 0.65rem;
   font-weight: 800;
   color: var(--gold-glow);
 }
 
-.r-title {
+.tab-name {
   font-size: 0.78rem;
   font-weight: 700;
 }
 
-.r-status {
+.tab-state {
   font-size: 0.65rem;
-  color: #cbd5e1;
+  color: #f1f8e9;
 }
 
-/* LISTE DE BOUTIQUE STABLE (SANS SAUTS AU CLIC) */
-.shelf-container {
+/* LISTE DE BOUTIQUE STABLE SANS SAUT */
+.store-deck {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -351,19 +473,17 @@ body.realm-glass-3 .glass-wall-back {
   padding-right: 4px;
 }
 
-/* CARTES FIXES (PAS DE RECRÉATION BRUTALE) */
 .store-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  /* Transition neutre sans décalage vertical */
   transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -372,8 +492,8 @@ body.realm-glass-3 .glass-wall-back {
 }
 
 .store-card:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(52, 211, 153, 0.45);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .store-card:disabled {
@@ -396,14 +516,14 @@ body.realm-glass-3 .glass-wall-back {
 .c-gain {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #34d399;
+  color: #d9f99d;
 }
 
 .c-foot {
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 4px;
 }
 
 .c-price {
@@ -415,11 +535,11 @@ body.realm-glass-3 .glass-wall-back {
 
 .c-qty {
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: #e2f5b5;
   font-weight: 700;
 }
 
-/* Particules nettes au clic */
+/* Particules au clic */
 .pop-gain {
   position: fixed;
   pointer-events: none;
@@ -427,19 +547,20 @@ body.realm-glass-3 .glass-wall-back {
   font-size: 1.3rem;
   font-weight: 900;
   color: var(--gold-glow);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
   z-index: 100;
   animation: float-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 @keyframes float-rise {
   0%   { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(0.9); }
-  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-40px) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-42px) scale(1.15); }
 }
 
-/* Responsive */
+/* Mobile */
 @media (max-width: 900px) {
   body { overflow-y: auto; }
   .main-interface { flex-direction: column; height: auto; }
   .liquid-dock { width: 100%; height: auto; }
+  .translucent-track { right: 0; }
 }
