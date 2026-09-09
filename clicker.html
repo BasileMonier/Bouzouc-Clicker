@@ -6,30 +6,67 @@
   <title>Bouzouc Clicker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
 </head>
 <body>
-
+  <!-- Halo vert émeraude d'ambiance -->
   <div class="glow"></div>
 
-  <main class="game-box">
-    <h1>Bouzouc Clicker</h1>
-    <p>Bienvenue dans le Bouzouc Clicker ! 
-      Appuie sur le Bouzouc au milieu, à force de cliquer tu vas pouvoir avoir acheter des bonus et avoir accés à des récompenses !</p>
+  <!-- ZONE DU HAUT -->
+  <header class="top-section">
+    <h1>BOUZOUC CLICKER</h1>
+    <p class="subtitle">Clique sur le Bouzouc pour récolter des zoucs et débloquer des améliorations !</p>
+  </header>
+
+  <!-- ZONE DU MILIEU -->
+  <main class="center-section">
     <div class="counter-box">
       <div id="counter" class="counter">0</div>
-      <div class="counter-label">Zouc Récupérés</div>
+      <div class="counter-label">Zoucs en réserve</div>
+      <div id="passive-rate" class="passive-rate">+0 zouc/sec</div>
     </div>
 
-    <!-- Tête cliquable -->
-    <button id="kante" class="kante-btn" aria-label="Cliquer sur Kanté"></button>
-
-    <!-- Message évolutif -->
-    <div id="status" class="status-badge">
-      Clique vite !
-    </div>
+    <!-- Tête / Bouton -->
+    <button id="bouzouc" class="bouzouc-btn" aria-label="Cliquer sur Bouzouc"></button>
   </main>
+
+  <!-- ZONE DU BAS : LA BOUTIQUE -->
+  <footer class="bottom-section">
+    <div class="shop-container">
+      <div class="shop-title">Boutique d'améliorations</div>
+      <div class="shop-grid">
+        
+        <!-- Upgrade 1: Auto-clicker -->
+        <button id="buy-autoclick" class="shop-item" disabled>
+          <div class="item-info">
+            <span class="item-name">🤖 Robot Zouc</span>
+            <span class="item-desc">+1 zouc par seconde</span>
+          </div>
+          <span class="item-cost" id="cost-autoclick">15 Zoucs</span>
+        </button>
+
+        <!-- Upgrade 2: Multiplicateur simple -->
+        <button id="buy-multiplier" class="shop-item" disabled>
+          <div class="item-info">
+            <span class="item-name">⚡ Doigt Agile</span>
+            <span class="item-desc">+1 par clic manuel</span>
+          </div>
+          <span class="item-cost" id="cost-multiplier">25 Zoucs</span>
+        </button>
+
+        <!-- Upgrade 3: Gros booster de clic -->
+        <button id="buy-superclick" class="shop-item" disabled>
+          <div class="item-info">
+            <span class="item-name">🔥 Méga Tacle</span>
+            <span class="item-desc">+5 par clic manuel</span>
+          </div>
+          <span class="item-cost" id="cost-superclick">100 Zoucs</span>
+        </button>
+
+      </div>
+    </div>
+  </footer>
 
   <script src="JavaScript/script.js"></script>
 </body>
