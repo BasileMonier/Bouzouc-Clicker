@@ -1,7 +1,7 @@
-// --- ÉTAT & SAUVEGARDE LOCALE ---
+// --- ÉTAT DU JEU & PERSISTANCE ---
 let saved = {};
 try {
-  saved = JSON.parse(localStorage.getItem('bouzouc_glass_hibitsave') || '{}');
+  saved = JSON.parse(localStorage.getItem('bouzouc_prism_save') || '{}');
 } catch (e) {
   saved = {};
 }
@@ -11,130 +11,36 @@ let clickPower = typeof saved.clickPower === 'number' ? saved.clickPower : 1;
 let passiveIncome = typeof saved.passiveIncome === 'number' ? saved.passiveIncome : 0;
 
 let hasDuoBlock = saved.hasDuoBlock || false;
-let hasWorld2Unlocked = saved.hasWorld2Unlocked || false;
-let currentWorld = saved.currentWorld || 1;
+let unlockedRealms = saved.unlockedRealms || [1];
+let currentRealm = saved.currentRealm || 1;
 
-// --- DÉFINITION DE TOUS LES OBJETS DE LA BOUTIQUE ---
-// Classés avec leur type pour gestion du déverrouillage
+// --- CONFIGURATION DES MONDES ---
+const REALMS = {
+  1: { name: "Secteur I — Manufacture Émeraude", cost: 0, class: "realm-glass-1" },
+  2: { name: "Secteur II — Crypte d'Ambre", cost: 150000, class: "realm-glass-2" },
+  3: { name: "Secteur III — Noyau de Cobalt", cost: 2500000, class: "realm-glass-3" }
+};
+
+// --- CATALOGUE STABLE DES AMÉLIORATIONS ---
 const itemsData = [
-  {
-    id: 'w1_c1',
-    name: 'Tasse de Chocolat',
-    gainDesc: '+1 Zouc / frappe',
-    baseCost: 15,
-    cost: 15,
-    gainClick: 1,
-    gainAuto: 0,
-    qty: 0,
-    mult: 1.15,
-    world: 1,
-    cartCol: '#854d0e'
-  },
-  {
-    id: 'w1_a1',
-    name: 'Mouton Cueilleur',
-    gainDesc: '+1 Zouc / sec',
-    baseCost: 35,
-    cost: 35,
-    gainClick: 0,
-    gainAuto: 1,
-    qty: 0,
-    mult: 1.15,
-    world: 1,
-    cartCol: '#cbd5e1'
-  },
-  {
-    id: 'w1_c2',
-    name: 'Fourche Émaillée',
-    gainDesc: '+6 Zoucs / frappe',
-    baseCost: 180,
-    cost: 180,
-    gainClick: 6,
-    gainAuto: 0,
-    qty: 0,
-    mult: 1.18,
-    world: 1,
-    cartCol: '#a16207'
-  },
-  {
-    id: 'w1_a2',
-    name: 'Cheminée à Rouages',
-    gainDesc: '+15 Zoucs / sec',
-    baseCost: 650,
-    cost: 650,
-    gainClick: 0,
-    gainAuto: 15,
-    qty: 0,
-    mult: 1.20,
-    world: 1,
-    cartCol: '#dc2626'
-  },
-  {
-    id: 'w2_c1',
-    name: 'Pic de Cristal Givré',
-    gainDesc: '+75 Zoucs / frappe',
-    baseCost: 7500,
-    cost: 7500,
-    gainClick: 75,
-    gainAuto: 0,
-    qty: 0,
-    mult: 1.22,
-    world: 2,
-    cartCol: '#38bdf8'
-  },
-  {
-    id: 'special_duo',
-    name: '★ MODULE BLOC B',
-    gainDesc: '+1 Bouton supplémentaire',
-    baseCost: 25000,
-    cost: 25000,
-    isDuoUpgrade: true,
-    world: 1
-  },
-  {
-    id: 'w2_a1',
-    name: 'Chalet de la Taïga',
-    gainDesc: '+260 Zoucs / sec',
-    baseCost: 28000,
-    cost: 28000,
-    gainClick: 0,
-    gainAuto: 260,
-    qty: 0,
-    mult: 1.24,
-    world: 2,
-    cartCol: '#0284c7'
-  },
-  {
-    id: 'special_realm2',
-    name: '❄️ CLÉ DE LA TAÏGA',
-    gainDesc: 'Déverrouille le Monde 2',
-    baseCost: 150000,
-    cost: 150000,
-    isRealmUpgrade: true,
-    world: 1
-  },
-  {
-    id: 'w2_relic',
-    name: '👑 Lanterne Boréale',
-    gainDesc: '+4 500/clic & +1 500/sec',
-    baseCost: 1200000,
-    cost: 1200000,
-    gainClick: 4500,
-    gainAuto: 1500,
-    qty: 0,
-    mult: 1.45,
-    world: 2,
-    cartCol: '#f59e0b'
-  }
+  { id: 'c1', name: 'Burin en Verre Trempé', gainDesc: '+1 Zouc / clic', baseCost: 15, cost: 15, gainClick: 1, gainAuto: 0, qty: 0, mult: 1.15 },
+  { id: 'a1', name: 'Robot Polisseur', gainDesc: '+1 Zouc / sec', baseCost: 35, cost: 35, gainClick: 0, gainAuto: 1, qty: 0, mult: 1.15 },
+  { id: 'c2', name: 'Presse de Verrier', gainDesc: '+6 Zoucs / clic', baseCost: 180, cost: 180, gainClick: 6, gainAuto: 0, qty: 0, mult: 1.18 },
+  { id: 'a2', name: 'Laminoir Automatique', gainDesc: '+16 Zoucs / sec', baseCost: 700, cost: 700, gainClick: 0, gainAuto: 16, qty: 0, mult: 1.20 },
+  { id: 'c3', name: 'Diamant de Découpe', gainDesc: '+35 Zoucs / clic', baseCost: 2400, cost: 2400, gainClick: 35, gainAuto: 0, qty: 0, mult: 1.22 },
+  { id: 'duo', name: '★ SECOND BLOC DE FRAPPE', gainDesc: 'Débloque un 2e bouton', baseCost: 20000, cost: 20000, isDuo: true },
+  { id: 'a3', name: 'Fourneau de Fusion', gainDesc: '+120 Zoucs / sec', baseCost: 8500, cost: 8500, gainClick: 0, gainAuto: 120, qty: 0, mult: 1.24 },
+  { id: 'c4', name: 'Laser Prismatique', gainDesc: '+300 Zoucs / clic', baseCost: 65000, cost: 65000, gainClick: 300, gainAuto: 0, qty: 0, mult: 1.25 },
+  { id: 'relic', name: '👑 Monolithe d’Émeraude', gainDesc: '+5 000/clic & +2 000/s', baseCost: 1000000, cost: 1000000, gainClick: 5000, gainAuto: 2000, qty: 0, mult: 1.45 }
 ];
 
-// Restaurer la progression sauvegardée
+// Restaurer la sauvegarde
 if (saved.items) {
-  for (const savedItem of saved.items) {
-    const item = itemsData.find(i => i.id === savedItem.id);
-    if (item) {
-      item.qty = savedItem.qty || 0;
-      item.cost = savedItem.cost || item.baseCost;
+  for (const s of saved.items) {
+    const it = itemsData.find(i => i.id === s.id);
+    if (it) {
+      it.qty = s.qty || 0;
+      it.cost = s.cost || it.baseCost;
     }
   }
 }
@@ -142,195 +48,202 @@ if (saved.items) {
 // --- DOM REFERENCES ---
 const counterEl = document.getElementById('counter');
 const passiveRateEl = document.getElementById('passive-rate');
-const realmPillEl = document.getElementById('realm-pill');
-const realmHeadingEl = document.getElementById('realm-heading');
-
+const activeRealmTag = document.getElementById('active-realm-tag');
 const btnMain = document.getElementById('bouzouc-main');
-const btnSecondary = document.getElementById('bouzouc-secondary');
-const secondGemSlot = document.getElementById('second-gem-slot');
-
-const travelW1 = document.getElementById('travel-world-1');
-const travelW2 = document.getElementById('travel-world-2');
-const dynamicShop = document.getElementById('dynamic-shop');
-const cartConvoy = document.getElementById('cart-convoy');
+const btnSecond = document.getElementById('bouzouc-second');
+const shopCatalog = document.getElementById('shop-catalog');
 
 function formatNum(num) {
   return Math.floor(num).toLocaleString('fr-FR');
 }
 
-// 1. PARTICULES JAILLISSANTES
-function spawnFineParticle(x, y, amount) {
-  const p = document.createElement('div');
-  p.className = 'fine-pop';
-  p.textContent = `+${amount}`;
+// 1. PARTICULES DE SCORE
+function spawnParticle(x, y, amount) {
+  const node = document.createElement('div');
+  node.className = 'pop-gain';
+  node.textContent = `+${amount}`;
   const drift = (Math.random() - 0.5) * 30;
-  p.style.left = `${x + drift}px`;
-  p.style.top = `${y}px`;
-  document.body.appendChild(p);
-  setTimeout(() => p.remove(), 600);
+  node.style.left = `${x + drift}px`;
+  node.style.top = `${y}px`;
+  document.body.appendChild(node);
+  setTimeout(() => node.remove(), 600);
 }
 
-// 2. WAGONNETS SUR LES RAILS
-function spawnMicroCart(color) {
-  if (cartConvoy.children.length > 8) {
-    cartConvoy.firstElementChild.remove();
-  }
-  const cart = document.createElement('div');
-  cart.className = 'micro-cart';
-  cart.style.boxShadow = `inset 0 0 0 2px ${color}`;
-  const duration = (Math.random() * 4 + 7).toFixed(1);
-  cart.style.animationDuration = `${duration}s`;
-  cartConvoy.appendChild(cart);
-}
+// 2. INITIALISATION UNIQUE DES CARTES (ANTI-SAUTS)
+function setupShopCatalog() {
+  shopCatalog.innerHTML = '';
+  // Tri initial par coût de base
+  const sorted = [...itemsData].sort((a, b) => a.cost - b.cost);
 
-// 3. VOYAGE ENTRE MONDES
-function setRealm(worldId) {
-  currentWorld = worldId;
-  if (worldId === 1) {
-    document.body.className = 'world-farm';
-    realmPillEl.textContent = 'FERME DU CRÉPUSCULE';
-    realmHeadingEl.textContent = 'BOUZOUC WORKSHOP';
-    travelW1.classList.add('is-active');
-    travelW2.classList.remove('is-active');
-  } else {
-    document.body.className = 'world-taiga';
-    realmPillEl.textContent = 'TAÏGA GIVRÉE';
-    realmHeadingEl.textContent = 'FROST BOUZOUC';
-    travelW2.classList.add('is-active');
-    travelW1.classList.remove('is-active');
-  }
-  refreshShopList();
-}
-
-travelW1.addEventListener('click', () => setRealm(1));
-travelW2.addEventListener('click', () => {
-  if (hasWorld2Unlocked) setRealm(2);
-});
-
-// 4. RAFRAÎCHISSEMENT ET CRÉATION DE LA BOUTIQUE (TRI PAR PRIX + BROUILLARD)
-function refreshShopList() {
-  // Trier tous les objets par coût croissant
-  const sortedItems = [...itemsData].sort((a, b) => a.cost - b.cost);
-
-  dynamicShop.innerHTML = '';
-
-  for (const item of sortedItems) {
-    // Si l'amélioration spéciale est déjà consommée, on ne l'affiche plus
-    if (item.isDuoUpgrade && hasDuoBlock) continue;
-    if (item.isRealmUpgrade && hasWorld2Unlocked) continue;
-
-    // RÈGLE DU BROUILLARD : Un item n'apparaît QUE si le joueur a eu au moins 75% du prix ou s'il en possède déjà
-    const isUnlocked = zoucs >= (item.cost * 0.75) || (item.qty && item.qty > 0);
-    if (!isUnlocked) continue;
-
-    // On crée la carte Liquid Glass
+  for (const item of sorted) {
     const card = document.createElement('button');
-    card.className = 'liquid-card';
-    if (item.isDuoUpgrade) card.classList.add('tier-duo');
-    if (item.isRealmUpgrade) card.classList.add('tier-realm');
-
-    card.disabled = zoucs < item.cost;
+    card.id = `card-${item.id}`;
+    card.className = 'store-card is-hidden';
 
     card.innerHTML = `
-      <div class="card-top">
-        <span class="card-name">${item.name}</span>
-        <span class="card-gain">${item.gainDesc}</span>
+      <div class="c-head">
+        <span class="c-name">${item.name}</span>
+        <span class="c-gain">${item.gainDesc}</span>
       </div>
-      <div class="card-bottom">
-        <span class="card-cost">${formatNum(item.cost)} Zoucs</span>
-        <span class="card-qty">${item.qty !== undefined ? `x${item.qty}` : 'UNIQUE'}</span>
+      <div class="c-foot">
+        <span class="c-price" id="cost-${item.id}">${formatNum(item.cost)} Z</span>
+        <span class="c-qty" id="qty-${item.id}">${item.qty !== undefined ? `x${item.qty}` : 'UNIQUE'}</span>
       </div>
     `;
 
-    card.addEventListener('click', () => buyShopItem(item));
-    dynamicShop.appendChild(card);
+    card.addEventListener('click', () => buyItem(item));
+    shopCatalog.appendChild(card);
   }
 }
 
+// 3. MISE À JOUR STABLE SANS TOUCHER AU DOM
+function updateShopVisibility() {
+  for (const item of itemsData) {
+    const card = document.getElementById(`card-${item.id}`);
+    if (!card) continue;
+
+    // Si le 2e bouton est déjà acquis, on cache la carte définitivement
+    if (item.isDuo && hasDuoBlock) {
+      card.classList.add('is-hidden');
+      continue;
+    }
+
+    // BROUILLARD D'ACHAT : Apparaît si le joueur a au moins 80% du prix ou s'il l'a déjà acheté une fois
+    const isRevealed = zoucs >= (item.cost * 0.8) || (item.qty && item.qty > 0);
+    if (isRevealed) {
+      card.classList.remove('is-hidden');
+      card.disabled = zoucs < item.cost;
+      
+      const costEl = document.getElementById(`cost-${item.id}`);
+      const qtyEl = document.getElementById(`qty-${item.id}`);
+      if (costEl) costEl.textContent = `${formatNum(item.cost)} Z`;
+      if (qtyEl && item.qty !== undefined) qtyEl.textContent = `x${item.qty}`;
+    } else {
+      card.classList.add('is-hidden');
+    }
+  }
+}
+
+// 4. GESTION DES MONDES DÉBLOCABLES
+function checkRealmUnlocks() {
+  for (const rId of [2, 3]) {
+    const btn = document.getElementById(`realm-btn-${rId}`);
+    if (!btn) continue;
+
+    const reqCost = REALMS[rId].cost;
+    const isUnlocked = unlockedRealms.includes(rId);
+
+    if (isUnlocked) {
+      btn.classList.remove('is-locked');
+      btn.querySelector('.r-status').textContent = (currentRealm === rId) ? 'Actif' : 'Accessible';
+    } else if (zoucs >= reqCost) {
+      // Déblocage automatique du monde
+      unlockedRealms.push(rId);
+      btn.classList.remove('is-locked');
+      btn.querySelector('.r-status').textContent = 'Débloqué !';
+    }
+  }
+}
+
+function switchRealm(rId) {
+  if (!unlockedRealms.includes(rId)) return;
+  currentRealm = rId;
+
+  document.body.className = REALMS[rId].class;
+  activeRealmTag.textContent = REALMS[rId].name;
+
+  for (let i = 1; i <= 3; i++) {
+    const btn = document.getElementById(`realm-btn-${i}`);
+    if (btn) {
+      if (i === rId) {
+        btn.classList.add('is-active');
+        btn.querySelector('.r-status').textContent = 'Actif';
+      } else if (unlockedRealms.includes(i)) {
+        btn.classList.remove('is-active');
+        btn.querySelector('.r-status').textContent = 'Accessible';
+      }
+    }
+  }
+  saveGame();
+}
+
+for (let i = 1; i <= 3; i++) {
+  document.getElementById(`realm-btn-${i}`).addEventListener('click', () => switchRealm(i));
+}
+
 // 5. ACHAT D'UN OBJET
-function buyShopItem(item) {
+function buyItem(item) {
   if (zoucs < item.cost) return;
 
   zoucs -= item.cost;
 
-  if (item.isDuoUpgrade) {
+  if (item.isDuo) {
     hasDuoBlock = true;
-    secondGemSlot.classList.remove('is-locked');
-  } else if (item.isRealmUpgrade) {
-    hasWorld2Unlocked = true;
-    travelW2.classList.remove('is-hidden');
-    setRealm(2);
+    btnSecond.classList.remove('hidden');
   } else {
     item.qty = (item.qty || 0) + 1;
     clickPower += item.gainClick;
     passiveIncome += item.gainAuto;
     item.cost = Math.round(item.cost * item.mult);
-    spawnMicroCart(item.cartCol);
   }
 
-  refreshGameUI();
-  saveGameData();
+  refreshUI();
+  saveGame();
 }
 
-// 6. MISE À JOUR DE L'INTERFACE GLOBALE
-function refreshGameUI() {
+// 6. CLIC MANUEL
+function handleClick(e) {
+  zoucs += clickPower;
+  refreshUI();
+
+  const box = e.currentTarget.getBoundingClientRect();
+  const x = e.clientX || (box.left + box.width / 2);
+  const y = e.clientY || (box.top + box.height / 2);
+  spawnParticle(x, y, clickPower);
+}
+
+btnMain.addEventListener('pointerdown', handleClick);
+btnSecond.addEventListener('pointerdown', handleClick);
+
+// 7. RAFRAÎCHISSEMENT GLOBAL
+function refreshUI() {
   counterEl.textContent = formatNum(zoucs);
-  passiveRateEl.textContent = `+${formatNum(passiveIncome)} / SEC`;
+  passiveRateEl.textContent = `+${formatNum(passiveIncome)} Z/s`;
 
   if (hasDuoBlock) {
-    secondGemSlot.classList.remove('is-locked');
+    btnSecond.classList.remove('hidden');
   }
 
-  if (hasWorld2Unlocked) {
-    travelW2.classList.remove('is-hidden');
-  }
-
-  refreshShopList();
+  checkRealmUnlocks();
+  updateShopVisibility();
 }
 
-// 7. SAUVEGARDE LOCALE
-function saveGameData() {
+// 8. SAUVEGARDE
+function saveGame() {
   const payload = {
     zoucs,
     clickPower,
     passiveIncome,
     hasDuoBlock,
-    hasWorld2Unlocked,
-    currentWorld,
+    unlockedRealms,
+    currentRealm,
     items: itemsData.map(i => ({ id: i.id, cost: i.cost, qty: i.qty }))
   };
-  localStorage.setItem('bouzouc_glass_hibitsave', JSON.stringify(payload));
+  localStorage.setItem('bouzouc_prism_save', JSON.stringify(payload));
 }
-setInterval(saveGameData, 3000);
+setInterval(saveGame, 3000);
 
-// 8. CLIC SUR LES BLOCS
-function handleGemClick(e) {
-  zoucs += clickPower;
-  refreshGameUI();
-
-  const box = e.currentTarget.getBoundingClientRect();
-  const x = e.clientX || (box.left + box.width / 2);
-  const y = e.clientY || (box.top + box.height / 2);
-  spawnFineParticle(x, y, clickPower);
-}
-
-btnMain.addEventListener('pointerdown', handleGemClick);
-btnSecondary.addEventListener('pointerdown', handleGemClick);
-
-// 9. REVENU PASSIF (10x par seconde)
+// REVENU PASSIF (10 fois par seconde)
 setInterval(() => {
   if (passiveIncome > 0) {
     zoucs += passiveIncome / 10;
     counterEl.textContent = formatNum(zoucs);
-
-    // Actualise les boutons achetables en direct
-    const cards = dynamicShop.querySelectorAll('.liquid-card');
-    cards.forEach((card, idx) => {
-      // Met à jour la disponibilité sans reconstruire tout le DOM
-    });
+    checkRealmUnlocks();
+    updateShopVisibility();
   }
 }, 100);
 
 // Initialisation
-setRealm(currentWorld);
-refreshGameUI();
+setupShopCatalog();
+switchRealm(currentRealm);
+refreshUI();

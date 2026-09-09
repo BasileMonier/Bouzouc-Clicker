@@ -3,121 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bouzouc Farm - Hi-Bit Glass Edition</title>
+  <title>Bouzouc Prism Clicker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Press+Start+2P&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
 </head>
-<body class="world-farm">
+<body class="realm-glass-1">
 
-  <!-- DÉCOR PIXEL ART HAUTE DÉFINITION -->
-  <div class="pixel-world-canvas">
-    <div class="sky-dome">
-      <div class="sun-dusk"></div>
-      <div class="stars-cluster"></div>
-      <div class="clouds-hbit">
-        <div class="cloud-hbit c-high"></div>
-        <div class="cloud-hbit c-mid"></div>
-      </div>
-    </div>
+  <!-- Mur de briques de verre texturé -->
+  <div class="glass-wall-back"></div>
+  <div class="sun-glare-prism"></div>
 
-    <!-- Forêt de sapins & crêtes en micro-pixels -->
-    <div class="pinetree-ridge"></div>
-
-    <!-- Scène rustique détaillée -->
-    <div class="farm-tableau">
-      <!-- Grange en bois rouge 16-bit -->
-      <div class="micro-barn">
-        <div class="barn-roof-slates"></div>
-        <div class="barn-attic-window"></div>
-        <div class="barn-wood-facade">
-          <div class="timber-planks"></div>
-          <div class="barn-lower-window"></div>
-          <div class="barn-stable-door"></div>
-        </div>
-        <div class="brick-chimney">
-          <div class="puff-micro p1"></div>
-          <div class="puff-micro p2"></div>
-        </div>
-      </div>
-
-      <!-- Meule de foin tressée & barrière piquetée -->
-      <div class="haystack-detailed"></div>
-      <div class="post-rail-fence"></div>
-      
-      <!-- Mouton & chat au repos -->
-      <div class="pixel-pet sheep"></div>
-      <div class="pixel-pet sleeping-cat"></div>
-    </div>
-
-    <!-- Voie ferrée à micro-traverses -->
-    <div class="fine-rail-lane">
-      <div class="ballast"></div>
-      <div class="steel-tracks"></div>
-      <div id="cart-convoy" class="cart-convoy"></div>
-    </div>
-
-    <!-- Sol texturé en herbe et terreau -->
-    <div class="detailed-turf"></div>
-  </div>
-
-  <!-- INTERFACE : GAUCHE = JEU PIXEL / DROITE = PANNEAU LIQUID GLASS -->
-  <div class="glass-split-layout">
+  <div class="main-interface">
     
-    <!-- SCÈNE CENTRALE DE FRAPPE -->
-    <main class="interactive-stage">
-      <header class="stage-tag">
-        <div class="realm-pill" id="realm-pill">FERME DU CRÉPUSCULE</div>
-        <h1 id="realm-heading">BOUZOUC WORKSHOP</h1>
+    <!-- SECTION CENTRALE DU JEU -->
+    <main class="core-stage">
+      <header class="realm-header">
+        <div class="realm-tag" id="active-realm-tag">Secteur I — Manufacture Émeraude</div>
+        <h1>BOUZOUC ATELIER</h1>
       </header>
 
-      <!-- Compteur flottant façon cartouche rétro -->
-      <div class="retro-ticker">
-        <div id="counter" class="count-value">0</div>
-        <div class="count-sub">ZOUCS RÉCOLTÉS</div>
-        <div id="passive-rate" class="passive-val">+0 / SEC</div>
+      <!-- Compteur Prisme Lumineux Original -->
+      <div class="prism-meter-card">
+        <div class="meter-orb-glow"></div>
+        <div class="meter-inner">
+          <span class="meter-label">ZOUCS CRISTALLISÉS</span>
+          <div id="counter" class="meter-digital">0</div>
+          <div class="meter-footer">
+            <span id="passive-rate" class="rate-badge">+0,0 Z/s</span>
+            <span class="purity-badge">Flux 100%</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Blocs d'émeraude sculptés -->
-      <div class="gem-matrix">
-        <div class="gem-anchor">
-          <button id="bouzouc-main" class="voxel-gem gem-a" aria-label="Miner le bloc A"></button>
-          <span class="gem-caption">BLOC A</span>
-        </div>
-
-        <div id="second-gem-slot" class="gem-anchor is-locked">
-          <button id="bouzouc-secondary" class="voxel-gem gem-b" aria-label="Miner le bloc B"></button>
-          <span class="gem-caption">BLOC B</span>
+      <!-- Bouton parfaitement centré -->
+      <div class="focal-zone">
+        <div class="glass-keystone" id="keystone-container">
+          <button id="bouzouc-main" class="bouzouc-tile-btn" aria-label="Frapper le Bouzouc"></button>
+          <button id="bouzouc-second" class="bouzouc-tile-btn duo-tile hidden" aria-label="Second bloc Bouzouc"></button>
         </div>
       </div>
     </main>
 
-    <!-- PANNEAU DROIT : LIQUID GLASS MORPHISM -->
-    <aside class="liquid-glass-dock">
-      <div class="dock-reflection"></div>
-      
+    <!-- PANNEAU DROIT : CONFIGURATION & BOUTIQUE LIQUIDE -->
+    <aside class="liquid-dock">
+      <div class="dock-backdrop"></div>
+
       <div class="dock-header">
-        <div class="dock-title-group">
-          <h2>Console d'Atelier</h2>
-          <span class="dock-status">Prêt</span>
-        </div>
+        <h2>Atelier &amp; Territoires</h2>
+        <span class="dock-indicator">Actif</span>
       </div>
 
-      <!-- Sélecteur de mondes -->
-      <nav class="glass-nav">
-        <span class="glass-label">TERRITOIRE ACTIF</span>
-        <div class="nav-pills">
-          <button id="travel-world-1" class="glass-pill is-active">Ferme Cosy</button>
-          <button id="travel-world-2" class="glass-pill is-hidden">Taïga Givrée ❄️</button>
-        </div>
-      </nav>
+      <!-- Frise des Mondes à Débloquer -->
+      <section class="realm-hub">
+        <span class="panel-section-title">PROGRESSION DES MONDES</span>
+        <div class="realm-cards-strip">
+          <button id="realm-btn-1" class="realm-card is-active">
+            <span class="r-num">MONDE 01</span>
+            <span class="r-title">Verrière Émeraude</span>
+            <span class="r-status">Actuel</span>
+          </button>
 
-      <!-- Catalogue dynamique trié par prix & masquage automatique -->
-      <section class="glass-shelf">
-        <span class="glass-label">ACQUISITIONS DISPONIBLES</span>
-        <div id="dynamic-shop" class="shelf-inventory">
-          <!-- Les cartes apparaissent ici uniquement quand le joueur en a les moyens -->
+          <button id="realm-btn-2" class="realm-card is-locked">
+            <span class="r-num">MONDE 02</span>
+            <span class="r-title">Crypte d'Ambre</span>
+            <span class="r-status">Requis : 150 000 Z</span>
+          </button>
+
+          <button id="realm-btn-3" class="realm-card is-locked">
+            <span class="r-num">MONDE 03</span>
+            <span class="r-title">Noyau de Cobalt</span>
+            <span class="r-status">Requis : 2 500 000 Z</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Liste d'Achats sans saut d'affichage -->
+      <section class="shelf-container">
+        <span class="panel-section-title">AMÉLIORATIONS DISPONIBLES</span>
+        <div id="shop-catalog" class="shop-catalog">
+          <!-- Les cartes sont instanciées de façon stable sans scintillement -->
         </div>
       </section>
     </aside>
