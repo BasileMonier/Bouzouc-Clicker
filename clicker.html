@@ -3,93 +3,221 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bouzouc Liquid Glass</title>
+  <title>CLAC — RUN &amp; ATELIER</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
 </head>
-<body class="realm-glass-1">
+<body id="sheet-body-element" class="view-hub">
 
-  <!-- FOND LIQUID GLASS CHROMATIQUE -->
-  <div class="liquid-canvas">
-    <div class="glass-ribbon ribbon-1"></div>
-    <div class="glass-ribbon ribbon-2"></div>
-    <div class="specular-caustic"></div>
+  <!-- REPÈRES D'IMPRESSION -->
+  <div class="print-cross top-left">+</div>
+  <div class="print-cross top-right">+</div>
+  <div class="print-cross bottom-left">+</div>
+  <div class="print-cross bottom-right">+</div>
+
+  <!-- COUCHE DES PROJECTILES / ORBES -->
+  <div id="projectiles-layer" class="projectiles-layer"></div>
+
+  <!-- BAVURE D'ENCRE LIBRE -->
+  <div id="free-ink-stain" class="free-ink-stain is-hidden">
+    <div class="stain-core">
+      <span class="stain-title">! BAVURE CORROSIF !</span>
+      <span id="stain-hp-pill" class="stain-sub">-- CLICS</span>
+    </div>
   </div>
 
-  <!-- LIGNE DE WAGONNETS EN BAS -->
-  <div class="translucent-track">
-    <div class="track-rail"></div>
-    <div id="cart-convoy" class="cart-convoy"></div>
-  </div>
-
-  <div class="main-interface">
-    
-    <!-- ZONE CENTRALE DU JEU -->
-    <main class="stage-viewport">
-      <header class="realm-header">
-        <div class="realm-pill" id="active-realm-tag">Secteur I — Nectar Émeraude</div>
-        <h1>BOUZOUC GLASS</h1>
-      </header>
-
-      <!-- Compteur en gélule de verre satiné -->
-      <div class="liquid-meter">
-        <div class="meter-glare"></div>
-        <span class="meter-caption">RÉSERVOIR DE ZOUCS</span>
-        <div id="counter" class="meter-val">0</div>
-        <div class="meter-sub">
-          <span id="passive-rate" class="rate-indicator">+0,0 Z/sec</span>
-          <span class="viscosity-tag">Flux Stable</span>
-        </div>
+  <!-- MODALES DE FIN DE RUN ET GAME OVER -->
+  <div id="run-summary-modal" class="modal-backdrop is-hidden">
+    <div class="modal-card">
+      <div class="modal-badge" id="modal-badge-status">RUN TERMINÉE</div>
+      <h2 id="modal-summary-title">BILAN D'EXTRACTION</h2>
+      <p class="modal-intro" id="modal-summary-desc">Le tirage a pris fin.</p>
+      
+      <div class="vault-deposit-box">
+        <span class="deposit-label">ZOUCS SÉCURISÉS :</span>
+        <span id="modal-deposit-amount" class="deposit-val">+0 Z</span>
       </div>
 
-      <!-- BOUTON UNIQUE PARFAITEMENT CENTRÉ -->
-      <div class="focal-center">
-        <div class="liquid-core-chassis">
-          <div class="liquid-glare-ring"></div>
-          <button id="bouzouc-main" class="bouzouc-liquid-btn" aria-label="Frapper le Bouzouc"></button>
+      <button id="btn-return-home" class="btn-primary-action">RENTRER À LA MAISON [ATELIER]</button>
+    </div>
+  </div>
+
+  <div id="gameover-overlay" class="modal-backdrop is-hidden">
+    <div class="modal-card danger-card">
+      <div class="modal-badge red">FAILLITE TECHNIQUE</div>
+      <h2>DÉPÔT DE BILAN (0 ZOUC)</h2>
+      <p class="modal-intro">L'encre a dévoré votre réserve. Tout l'argent non sécurisé de cette run est perdu.</p>
+      <button id="btn-restart-game" class="btn-primary-action red-btn">RÉOUVRIR UN DOSSIER [RETRY]</button>
+    </div>
+  </div>
+
+  <div class="sheet-frame">
+    
+    <!-- EN-TÊTE : TITRE CLAC EN HAUT À GAUCHE -->
+    <header class="sheet-header">
+      <div class="header-top-nav">
+        <div class="mode-tabs">
+          <span class="brand-title-top">CLAC</span>
+          <button id="tab-nav-hub" class="mode-tab is-active">1. LA MAISON</button>
+          <button id="tab-nav-run" class="mode-tab">2. SALLE DES PRESSES</button>
+          <button id="btn-toggle-pause" class="btn-pause-header is-hidden" title="Pause (P)">PAUSE [P]</button>
+          <button id="btn-quit-run" class="btn-quit-header is-hidden" title="Quitter la run et garder 50%">ABANDONNER (50%)</button>
         </div>
+
+        <div class="header-sub">
+          <span class="edition" id="status-header-tag">Atelier Central</span>
+          <span class="batch" id="sub-header-tag">Repos</span>
+        </div>
+      </div>
+      <div class="thick-rule"></div>
+    </header>
+
+    <!-- VUE 1 : LA MAISON -->
+    <main id="view-hub-section" class="screen-view">
+      <div class="hub-grid">
+        
+        <section class="hub-vault-col">
+          <div class="meta-label">coffre-fort permanent</div>
+          <div id="hub-vault-counter" class="giant-counter vault-color">0</div>
+          <span class="vault-subtext">Total sécurisé pour l'équipement et le développement</span>
+
+          <div class="start-run-card">
+            <span class="run-card-title">DÉPART DU TIRAGE</span>
+            <p class="run-card-desc">Démarrez une expédition à 0 Zouc. Extrayez un maximum de ressources.</p>
+            <button id="btn-launch-run" class="btn-primary-action launch-btn">LANCER LA RUN [DÉPART]</button>
+          </div>
+
+          <div class="hub-shop-card">
+            <div class="shop-headline">perfectionnements d'atelier</div>
+            <div id="hub-perks-list" class="technical-catalog"></div>
+          </div>
+        </section>
+
+        <section class="hub-craft-col">
+          <div class="shop-headline">module d'exposition &amp; identité</div>
+          
+          <div class="static-pedestal">
+            <button id="hub-static-square" class="static-display-tile" aria-label="Gagner des Zoucs">
+              <span id="hub-tile-title" class="tile-title">CLAC</span>
+              <span class="tile-sub">+1</span>
+            </button>
+          </div>
+
+          <div class="custom-card">
+            <span class="custom-label">PSEUDO DANS LE CARRÉ</span>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="pseudo-input" placeholder="Votre pseudo..." class="style-choice-btn" style="flex: 1; background: #fff;" maxlength="8">
+              <button id="btn-save-pseudo" class="style-choice-btn" style="background: var(--ink-black); color: #fff;">OK</button>
+            </div>
+          </div>
+
+          <div class="custom-card">
+            <span class="custom-label">FORME D'IMPRESSION</span>
+            <div class="custom-btn-grid" id="shape-selectors"></div>
+          </div>
+
+          <div class="custom-card">
+            <span class="custom-label">TEINTE DE L'ENCRE</span>
+            <div class="custom-btn-grid" id="color-selectors"></div>
+          </div>
+
+          <div class="custom-card" id="image-upload-card">
+            <span class="custom-label" id="img-upload-title">IMAGE PERSO (BLOQUÉE)</span>
+            <input type="file" id="custom-image-input" accept="image/*" class="style-choice-btn" style="width: 100%; display: none;">
+            <button id="btn-remove-image" class="style-choice-btn" style="margin-top: 4px; color: #d32f2f; display: none;">Retirer l'image</button>
+            <span id="img-upload-info" style="font-size: 0.58rem; color: var(--muted-gray);">Achetez la 'Matrice Photo Libre' pour l'activer.</span>
+          </div>
+        </section>
+
       </div>
     </main>
 
-    <!-- PANNEAU DROIT LIQUID GLASS -->
-    <aside class="liquid-dock">
-      <div class="dock-header">
-        <h2>Atelier &amp; Territoires</h2>
-        <span class="status-dot">Actif</span>
+    <!-- VUE 2 : LA RUN -->
+    <main id="view-run-section" class="screen-view is-hidden">
+      
+      <div id="floor-clear-banner" class="floor-clear-banner is-hidden">
+        <div class="banner-text">
+          <span class="banner-title">PALIER FRANCHI !</span>
+          <span class="banner-sub">Encaissez vos gains ou continuez.</span>
+        </div>
+        <div class="banner-actions">
+          <button id="btn-bank-and-leave" class="banner-btn secure-btn">SÉCURISER &amp; RENTRER</button>
+          <button id="btn-continue-run" class="banner-btn continue-btn">CONTINUER →</button>
+        </div>
       </div>
 
-      <!-- Frise des Mondes -->
-      <section class="realm-deck">
-        <span class="deck-title">SECTEURS À DÉBLOQUER</span>
-        <div class="realm-tabs">
-          <button id="realm-btn-1" class="realm-tab is-active">
-            <span class="tab-sec">SECTEUR 01</span>
-            <span class="tab-name">Nectar Émeraude</span>
-            <span class="tab-state">Actuel</span>
-          </button>
+      <div class="sheet-body">
+        
+        <section class="col-left">
+          <div class="meta-label">bénéfice net de la run</div>
+          <div id="counter" class="giant-counter">0</div>
 
-          <button id="realm-btn-2" class="realm-tab is-locked">
-            <span class="tab-sec">SECTEUR 02</span>
-            <span class="tab-name">Ambre Solaire</span>
-            <span class="tab-state">Requis : 150 000 Z</span>
-          </button>
+          <div class="metrics-row">
+            <div class="metric-cell">
+              <span class="m-label">par seconde</span>
+              <span id="stat-passive" class="m-val orange">+0.0</span>
+            </div>
+            <div class="metric-cell">
+              <span class="m-label">par clic</span>
+              <span id="stat-click" class="m-val orange">+1</span>
+            </div>
+            <div class="metric-cell">
+              <span class="m-label">objectif palier</span>
+              <span id="stat-target" class="m-val orange-text">5 000 Z</span>
+            </div>
+          </div>
 
-          <button id="realm-btn-3" class="realm-tab is-locked">
-            <span class="tab-sec">SECTEUR 03</span>
-            <span class="tab-name">Saphir Fluide</span>
-            <span class="tab-state">Requis : 2 500 000 Z</span>
-          </button>
-        </div>
-      </section>
+          <div id="heat-container" class="heat-gauge-container">
+            <div class="heat-meta">
+              <span class="heat-label">pression thermique</span>
+              <span id="heat-status" class="heat-state">0% [x1.0 BOOST]</span>
+            </div>
+            <div class="heat-track">
+              <div id="heat-fill" class="heat-fill"></div>
+            </div>
+            <div id="heat-warning" class="heat-warning-banner is-hidden">
+              ! BOURRAGE PAPIER : PRESSE BLOQUÉE !
+            </div>
+          </div>
 
-      <!-- Catalogue sans sauts au clic -->
-      <section class="store-deck">
-        <span class="deck-title">CATALOGUE DES MODULES</span>
-        <div id="shop-catalog" class="shop-catalog"></div>
-      </section>
-    </aside>
+          <div class="movement-sandbox" id="sandbox">
+            <button id="active-square" class="floating-black-tile" aria-label="Cible principale">
+              <span id="run-tile-title" class="tile-title">CLAC</span>
+              <span id="tile-gain" class="tile-sub">+1</span>
+            </button>
+
+            <button id="beta-square" class="floating-black-tile beta-tile is-hidden" aria-label="Module Bêta">
+              <span class="tile-title">BÊTA</span>
+              <span id="beta-gain" class="tile-sub">+3</span>
+            </button>
+
+            <button id="hazard-square-1" class="hazard-tile" aria-label="Piège 1">
+              <span class="hazard-title">REBUT</span>
+              <span class="hazard-sub">-15%</span>
+            </button>
+            <button id="hazard-square-2" class="hazard-tile is-hidden" aria-label="Piège 2">
+              <span class="hazard-title">REBUT</span>
+              <span class="hazard-sub">-15%</span>
+            </button>
+            <button id="hazard-square-3" class="hazard-tile is-hidden" aria-label="Piège 3">
+              <span class="hazard-title">REBUT</span>
+              <span class="hazard-sub">-15%</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- BOUTIQUE DE RUN -->
+        <section class="col-right">
+          <div class="shop-nav-strip">
+            <span class="shop-headline">machines provisoires (run)</span>
+          </div>
+          <div id="catalog-list" class="technical-catalog"></div>
+        </section>
+
+      </div>
+    </main>
 
   </div>
 
