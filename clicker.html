@@ -3,155 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bouzouc Clicker - Pixel Edition</title>
+  <title>Bouzouc Farm - Hi-Bit Glass Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Press+Start+2P&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clicker.css">
 </head>
-<body>
+<body class="world-farm">
 
-  <!-- CIEL DU SOIR VOXEL -->
-  <div class="voxel-world">
-    <!-- Soleil cubique -->
-    <div class="pixel-sun"></div>
-
-    <!-- Nuages cubiques étagés -->
-    <div class="pixel-cloud cloud-1"></div>
-    <div class="pixel-cloud cloud-2"></div>
-
-    <!-- Oiseaux carrés -->
-    <div id="pixel-birds" class="pixel-birds"></div>
-
-    <!-- Montagnes & Collines en blocs -->
-    <div class="mountain-layer distant"></div>
-    <div class="mountain-layer near"></div>
-
-    <!-- Piste de rails complète d'un bord à l'autre -->
-    <div class="minecart-track">
-      <div class="rail-ties"></div>
-      <div class="iron-rails"></div>
-      <!-- Wagonnets animés -->
-      <div id="cart-container" class="cart-container"></div>
+  <!-- DÉCOR PIXEL ART HAUTE DÉFINITION -->
+  <div class="pixel-world-canvas">
+    <div class="sky-dome">
+      <div class="sun-dusk"></div>
+      <div class="stars-cluster"></div>
+      <div class="clouds-hbit">
+        <div class="cloud-hbit c-high"></div>
+        <div class="cloud-hbit c-mid"></div>
+      </div>
     </div>
 
-    <!-- Sol d'herbe cubique -->
-    <div class="grass-ground">
-      <div class="pixel-sheep"></div>
-    </div>
-  </div>
+    <!-- Forêt de sapins & crêtes en micro-pixels -->
+    <div class="pinetree-ridge"></div>
 
-  <!-- INTERFACE DE JEU EN PIXELS -->
-  <div class="ui-layer">
-    <header class="game-header">
-      <div class="kicker">BOUZOUC CRAFT</div>
-      <h1>BOUZOUC CLICKER</h1>
-      <p class="subtitle">Mine l'émeraude sacrée et équipe ta manufacture cubique.</p>
-    </header>
-
-    <main class="mining-zone">
-      <div class="pixel-scoreboard">
-        <div id="counter" class="count">0</div>
-        <div class="unit">ZOUCS MINÉS</div>
-        <div id="passive-rate" class="rate">+0 / SEC</div>
+    <!-- Scène rustique détaillée -->
+    <div class="farm-tableau">
+      <!-- Grange en bois rouge 16-bit -->
+      <div class="micro-barn">
+        <div class="barn-roof-slates"></div>
+        <div class="barn-attic-window"></div>
+        <div class="barn-wood-facade">
+          <div class="timber-planks"></div>
+          <div class="barn-lower-window"></div>
+          <div class="barn-stable-door"></div>
+        </div>
+        <div class="brick-chimney">
+          <div class="puff-micro p1"></div>
+          <div class="puff-micro p2"></div>
+        </div>
       </div>
 
-      <!-- BLOC D'ÉMERAUDE CUBIQUE FAÇON MINECRAFT -->
-      <div class="emerald-voxel-wrapper">
-        <button id="bouzouc" class="emerald-voxel-btn" aria-label="Miner le bloc d'émeraude">
-          <div class="voxel-face top"></div>
-          <div class="voxel-face front"></div>
-        </button>
+      <!-- Meule de foin tressée & barrière piquetée -->
+      <div class="haystack-detailed"></div>
+      <div class="post-rail-fence"></div>
+      
+      <!-- Mouton & chat au repos -->
+      <div class="pixel-pet sheep"></div>
+      <div class="pixel-pet sleeping-cat"></div>
+    </div>
+
+    <!-- Voie ferrée à micro-traverses -->
+    <div class="fine-rail-lane">
+      <div class="ballast"></div>
+      <div class="steel-tracks"></div>
+      <div id="cart-convoy" class="cart-convoy"></div>
+    </div>
+
+    <!-- Sol texturé en herbe et terreau -->
+    <div class="detailed-turf"></div>
+  </div>
+
+  <!-- INTERFACE : GAUCHE = JEU PIXEL / DROITE = PANNEAU LIQUID GLASS -->
+  <div class="glass-split-layout">
+    
+    <!-- SCÈNE CENTRALE DE FRAPPE -->
+    <main class="interactive-stage">
+      <header class="stage-tag">
+        <div class="realm-pill" id="realm-pill">FERME DU CRÉPUSCULE</div>
+        <h1 id="realm-heading">BOUZOUC WORKSHOP</h1>
+      </header>
+
+      <!-- Compteur flottant façon cartouche rétro -->
+      <div class="retro-ticker">
+        <div id="counter" class="count-value">0</div>
+        <div class="count-sub">ZOUCS RÉCOLTÉS</div>
+        <div id="passive-rate" class="passive-val">+0 / SEC</div>
+      </div>
+
+      <!-- Blocs d'émeraude sculptés -->
+      <div class="gem-matrix">
+        <div class="gem-anchor">
+          <button id="bouzouc-main" class="voxel-gem gem-a" aria-label="Miner le bloc A"></button>
+          <span class="gem-caption">BLOC A</span>
+        </div>
+
+        <div id="second-gem-slot" class="gem-anchor is-locked">
+          <button id="bouzouc-secondary" class="voxel-gem gem-b" aria-label="Miner le bloc B"></button>
+          <span class="gem-caption">BLOC B</span>
+        </div>
       </div>
     </main>
 
-    <!-- BOUTIQUE D'AMÉLIORATIONS FAÇON INVENTAIRE -->
-    <footer class="inventory-bazaar">
-      <div class="inventory-title">
-        <span>[ INVENTAIRE D'ATELIER ]</span>
-        <span class="sub">FORGE DE BLOCS</span>
+    <!-- PANNEAU DROIT : LIQUID GLASS MORPHISM -->
+    <aside class="liquid-glass-dock">
+      <div class="dock-reflection"></div>
+      
+      <div class="dock-header">
+        <div class="dock-title-group">
+          <h2>Console d'Atelier</h2>
+          <span class="dock-status">Prêt</span>
+        </div>
       </div>
 
-      <div class="catalog">
-        <button id="buy-click1" class="merch-slot" disabled>
-          <div class="slot-info">
-            <span class="slot-name">Pioche en Bois</span>
-            <span class="slot-gain">+1 / clic</span>
-          </div>
-          <div class="slot-deal">
-            <span id="cost-click1" class="price">15</span>
-            <span id="qty-click1" class="owned">x0</span>
-          </div>
-        </button>
+      <!-- Sélecteur de mondes -->
+      <nav class="glass-nav">
+        <span class="glass-label">TERRITOIRE ACTIF</span>
+        <div class="nav-pills">
+          <button id="travel-world-1" class="glass-pill is-active">Ferme Cosy</button>
+          <button id="travel-world-2" class="glass-pill is-hidden">Taïga Givrée ❄️</button>
+        </div>
+      </nav>
 
-        <button id="buy-auto1" class="merch-slot" disabled>
-          <div class="slot-info">
-            <span class="slot-name">Golem Ouvrier</span>
-            <span class="slot-gain">+1 / sec</span>
-          </div>
-          <div class="slot-deal">
-            <span id="cost-auto1" class="price">30</span>
-            <span id="qty-auto1" class="owned">x0</span>
-          </div>
-        </button>
+      <!-- Catalogue dynamique trié par prix & masquage automatique -->
+      <section class="glass-shelf">
+        <span class="glass-label">ACQUISITIONS DISPONIBLES</span>
+        <div id="dynamic-shop" class="shelf-inventory">
+          <!-- Les cartes apparaissent ici uniquement quand le joueur en a les moyens -->
+        </div>
+      </section>
+    </aside>
 
-        <button id="buy-click2" class="merch-slot" disabled>
-          <div class="slot-info">
-            <span class="slot-name">Pioche en Fer</span>
-            <span class="slot-gain">+5 / clic</span>
-          </div>
-          <div class="slot-deal">
-            <span id="cost-click2" class="price">120</span>
-            <span id="qty-click2" class="owned">x0</span>
-          </div>
-        </button>
-
-        <button id="buy-auto2" class="merch-slot" disabled>
-          <div class="slot-info">
-            <span class="slot-name">Fourneau Rouge</span>
-            <span class="slot-gain">+12 / sec</span>
-          </div>
-          <div class="slot-deal">
-            <span id="cost-auto2" class="price">400</span>
-            <span id="qty-auto2" class="owned">x0</span>
-          </div>
-        </button>
-
-        <button id="buy-click3" class="merch-slot" disabled>
-          <div class="slot-info">
-            <span class="slot-name">Pioche Diamant</span>
-            <span class="slot-gain">+35 / clic</span>
-          </div>
-          <div class="slot-deal">
-            <span id="cost-click3" class="price">1 500</span>
-            <span id="qty-click3" class="owned">x0</span>
-          </div>
-        </button>
-
-        <button id="buy-auto3" class="merch-slot" disabled>
-          <div class="slot-info">
-            <span class="slot-name">Foreuse Antique</span>
-            <span class="slot-gain">+90 / sec</span>
-          </div>
-          <div class="slot-deal">
-            <span id="cost-auto3" class="price">5 000</span>
-            <span id="qty-auto3" class="owned">x0</span>
-          </div>
-        </button>
-
-        <!-- OBJET ULTIME LÉGENDAIRE -->
-        <button id="buy-relic" class="merch-slot relic-slot" disabled>
-          <div class="slot-info">
-            <span class="slot-name gold-text">★ BALISE DE NÉTHÉRITE ★</span>
-            <span class="slot-gain relic-sub">+6 000/clic &amp; +1 200/sec</span>
-          </div>
-          <div class="slot-deal">
-            <span id="cost-relic" class="price gold-text">1 000 000</span>
-            <span id="qty-relic" class="owned">x0</span>
-          </div>
-        </button>
-      </div>
-    </footer>
   </div>
 
   <script src="JavaScript/script.js"></script>

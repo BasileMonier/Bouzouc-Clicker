@@ -7,511 +7,688 @@
 }
 
 :root {
-  --sky-top: #1a0f2e;
-  --sky-mid: #96384e;
-  --sky-bottom: #e06c3a;
-  --sun-gold: #fde047;
-  --grass-top: #388e3c;
-  --grass-dirt: #2e6628;
-  --dirt-brown: #4e342e;
-  --emerald-main: #10b981;
-  --emerald-dark: #047857;
-  --emerald-light: #6ee7b7;
-  --gui-bg: #2d3238;
-  --gui-border-light: #525a65;
-  --gui-border-dark: #1b1e22;
   --gold: #fbbf24;
+  --emerald-edge: #065f46;
+  --emerald-face: #10b981;
+  --emerald-hi: #6ee7b7;
+  --glass-surface: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: rgba(0, 0, 0, 0.35);
 }
 
 body {
   min-height: 100vh;
-  background-color: var(--sky-top);
-  font-family: 'Press Start 2P', monospace;
-  color: #ffffff;
-  overflow-x: hidden;
-  position: relative;
-  image-rendering: pixelated; /* Conserve le crénelage rétro des pixels */
+  font-family: 'Syne', sans-serif;
+  color: #f8fafc;
+  overflow: hidden;
+  background: #090e17;
 }
 
 /* ====================================================
-   DÉCOR PIXEL ART MINECRAFT (VOXEL WORLD)
+   DÉCOR HI-BIT / MICRO PIXEL ART
    ==================================================== */
-.voxel-world {
+.pixel-world-canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
+  image-rendering: pixelated;
+}
+
+/* Ciel nuancé au couchant */
+body.world-farm .sky-dome {
+  position: absolute;
+  inset: 0;
   background: linear-gradient(
     180deg,
-    var(--sky-top) 0%,
-    #4a1532 25%,
-    var(--sky-mid) 50%,
-    var(--sky-bottom) 70%,
-    #f59e0b 90%
+    #140b29 0%,
+    #2f143d 25%,
+    #692248 50%,
+    #aa3c3b 72%,
+    #e06b3a 88%,
+    #fcd34d 100%
   );
 }
 
-/* Soleil carré Minecraft */
-.pixel-sun {
+body.world-farm .sun-dusk {
   position: absolute;
-  bottom: 30%;
-  left: 65%;
-  width: 72px;
-  height: 72px;
-  background-color: var(--sun-gold);
+  bottom: 24%;
+  left: 36%;
+  width: 54px;
+  height: 54px;
+  background: #fffbeb;
   box-shadow: 
-    0 0 0 6px #fef08a,
-    0 0 0 14px rgba(253, 224, 71, 0.4),
-    0 0 35px rgba(251, 146, 60, 0.8);
-  border: 4px solid #fff;
+    0 0 0 3px #fef08a,
+    0 0 0 8px rgba(251, 191, 36, 0.6),
+    0 0 30px rgba(249, 115, 22, 0.85);
 }
 
-/* Nuages carrés étagés */
-.pixel-cloud {
-  position: absolute;
-  height: 24px;
-  background: rgba(255, 230, 220, 0.55);
-  box-shadow: 
-    0 8px 0 rgba(220, 160, 160, 0.45),
-    inset 0 4px 0 rgba(255, 255, 255, 0.6);
-}
-
-.cloud-1 {
-  width: 220px;
-  top: 15%;
-  left: -240px;
-  animation: float-cloud 50s linear infinite;
-}
-
-.cloud-2 {
-  width: 160px;
-  top: 26%;
-  left: -180px;
-  animation: float-cloud 38s linear infinite 14s;
-}
-
-@keyframes float-cloud {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(calc(100vw + 300px)); }
-}
-
-/* Oiseaux carrés */
-.pixel-birds {
+/* Monde 2 : Taïga Givrée */
+body.world-taiga .sky-dome {
   position: absolute;
   inset: 0;
+  background: linear-gradient(180deg, #020b14 0%, #0c1d2e 35%, #183d4e 70%, #48727d 100%);
+}
+
+body.world-taiga .sun-dusk {
+  position: absolute;
+  bottom: 28%;
+  left: 28%;
+  width: 44px;
+  height: 44px;
+  background: #f0f9ff;
+  box-shadow: 0 0 0 3px #bae6fd, 0 0 25px #38bdf8;
+}
+
+body.world-taiga .farm-tableau {
+  filter: hue-rotate(170deg) brightness(0.9);
+}
+
+body.world-taiga .detailed-turf {
+  border-top-color: #f1f5f9;
+  background: #1e293b;
+}
+
+/* Étoiles fines */
+.stars-cluster {
+  position: absolute;
+  top: 6%;
+  left: 8%;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  box-shadow:
+    40px 10px 0 #fff, 120px 25px 0 #fde68a, 200px 5px 0 #fff,
+    300px 30px 0 #fde68a, 420px 12px 0 #fff, 90px 45px 0 #fff;
+}
+
+/* Nuages fins */
+.cloud-hbit {
+  position: absolute;
+  height: 14px;
+  background: rgba(255, 235, 225, 0.45);
+  box-shadow: 0 4px 0 rgba(220, 150, 150, 0.35);
+}
+
+.c-high { width: 140px; top: 12%; left: -160px; animation: cloud-float 50s linear infinite; }
+.c-mid  { width: 190px; top: 20%; left: -220px; animation: cloud-float 65s linear infinite 20s; }
+
+@keyframes cloud-float {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(110vw); }
+}
+
+/* Forêt de sapins dentelée en micro-pixels */
+.pinetree-ridge {
+  position: absolute;
+  bottom: 110px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: repeating-linear-gradient(90deg, #1b261f 0 24px, #16201a 24px 48px);
+  clip-path: polygon(
+    0% 100%, 0% 60%, 4% 30%, 8% 60%, 12% 20%, 16% 55%, 20% 15%, 25% 65%, 30% 25%,
+    36% 70%, 42% 18%, 48% 60%, 55% 10%, 62% 65%, 70% 20%, 78% 70%, 85% 15%, 92% 55%, 100% 30%, 100% 100%
+  );
+  opacity: 0.85;
+}
+
+/* ====================================================
+   FERME RUSTIQUE HI-BIT
+   ==================================================== */
+.farm-tableau {
+  position: absolute;
+  bottom: 56px;
+  left: 4%;
+  width: 380px;
+  height: 180px;
   pointer-events: none;
 }
 
-.voxel-bird {
+.micro-barn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 155px;
+  height: 130px;
+}
+
+.barn-roof-slates {
+  width: 100%;
+  height: 46px;
+  background: 
+    repeating-linear-gradient(135deg, #451512 0 4px, #5c1e19 4px 8px);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  border-bottom: 2px solid #230806;
+}
+
+.barn-attic-window {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #fde047;
+  border: 2px solid #2b0b08;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+}
+
+.barn-wood-facade {
+  width: 134px;
+  height: 84px;
+  margin: 0 auto;
+  background: #7f1d1d;
+  border: 3px solid #3b0906;
+  position: relative;
+  /* Lattes de bois fines */
+  background-image: repeating-linear-gradient(0deg, #6e1717 0 6px, #8d2323 6px 7px);
+}
+
+.barn-lower-window {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 20px;
+  height: 24px;
+  background: #fef08a;
+  border: 2px solid #3b0906;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+}
+
+.barn-stable-door {
+  position: absolute;
+  bottom: 0;
+  right: 16px;
+  width: 32px;
+  height: 48px;
+  background: #2b0b08;
+  border-top: 3px solid #571612;
+}
+
+.brick-chimney {
+  position: absolute;
+  top: -6px;
+  right: 28px;
+  width: 16px;
+  height: 36px;
+  background: #475569;
+  border: 2px solid #1e293b;
+}
+
+.puff-micro {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #2e081c;
-  box-shadow: 8px 4px 0 #2e081c, -8px 4px 0 #2e081c;
-  animation: fly-across linear infinite;
+  background: rgba(255, 255, 255, 0.5);
+  animation: micro-smoke 3s linear infinite;
 }
 
-@keyframes fly-across {
-  0%   { transform: translate(-40px, 0); }
-  50%  { transform: translate(50vw, -20px); }
-  100% { transform: translate(105vw, 10px); }
+.puff-micro.p2 { animation-delay: 1.5s; }
+
+@keyframes micro-smoke {
+  0%   { transform: translate(0, 0) scale(0.6); opacity: 0.7; }
+  100% { transform: translate(-22px, -55px) scale(2); opacity: 0; }
 }
 
-/* Collines et montagnes en escalier voxel */
-.mountain-layer {
+.haystack-detailed {
   position: absolute;
-  bottom: 120px;
-  left: 0;
-  right: 0;
-  height: 160px;
-  pointer-events: none;
+  bottom: 0;
+  left: 170px;
+  width: 38px;
+  height: 28px;
+  background: #ca8a04;
+  border: 2px solid #713f12;
+  border-radius: 4px 4px 0 0;
 }
 
-.mountain-layer.distant {
-  background: 
-    repeating-linear-gradient(90deg, #371a33 0 60px, #421e3c 60px 120px);
-  clip-path: polygon(
-    0% 100%, 0% 60%, 15% 30%, 30% 60%, 45% 20%, 65% 55%, 80% 15%, 100% 50%, 100% 100%
-  );
-  opacity: 0.6;
-}
-
-.mountain-layer.near {
-  bottom: 80px;
-  height: 140px;
-  background: 
-    repeating-linear-gradient(90deg, #1e3822 0 50px, #244629 50px 100px);
-  clip-path: polygon(
-    0% 100%, 0% 50%, 20% 25%, 35% 60%, 55% 15%, 75% 45%, 90% 20%, 100% 40%, 100% 100%
-  );
-}
-
-/* Ligne complète de rails de wagonnet (Minecart Track) */
-.minecart-track {
+.post-rail-fence {
   position: absolute;
-  bottom: 68px;
-  left: 0;
-  right: 0;
-  height: 22px;
-  background-color: #3b2818;
-  border-top: 4px solid #23160b;
+  bottom: 0;
+  left: 215px;
+  width: 75px;
+  height: 18px;
+  background: repeating-linear-gradient(90deg, #572e0d 0 4px, transparent 4px 14px);
+  border-top: 3px solid #572e0d;
 }
 
-/* Traverses en bois carrées */
-.rail-ties {
+.pixel-pet.sheep {
+  position: absolute;
+  bottom: 0;
+  right: 18px;
+  width: 24px;
+  height: 18px;
+  background: #f8fafc;
+  border: 2px solid #94a3b8;
+  box-shadow: -5px 3px 0 #cbd5e1;
+}
+
+.pixel-pet.sleeping-cat {
+  position: absolute;
+  bottom: 0;
+  left: 145px;
+  width: 12px;
+  height: 8px;
+  background: #ea580c;
+  border-radius: 2px;
+}
+
+/* Rails fins */
+.fine-rail-lane {
+  position: absolute;
+  bottom: 56px;
+  left: 0;
+  right: 430px;
+  height: 16px;
+  background: #1e130c;
+}
+
+.ballast {
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(
-    90deg,
-    #5d4037 0px 8px,
-    transparent 8px 24px
-  );
+  background-image: repeating-linear-gradient(90deg, #3d2618 0 4px, transparent 4px 16px);
 }
 
-/* Rails métalliques */
-.iron-rails {
+.steel-tracks {
   position: absolute;
-  top: 4px;
-  bottom: 4px;
-  left: 0;
-  right: 0;
-  border-top: 3px solid #cfd8dc;
-  border-bottom: 3px solid #90a4ae;
-}
-
-.cart-container {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-/* Wagonnet (Minecart) pixélisé */
-.pixel-minecart {
-  position: absolute;
+  top: 2px;
   bottom: 2px;
-  width: 32px;
-  height: 22px;
-  background: #546e7a;
-  border: 3px solid #263238;
-  border-top: none;
-  box-shadow: inset 0 -3px 0 #37474f;
-  animation: roll-cart linear infinite;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  left: 0;
+  right: 0;
+  border-top: 2px solid #e2e8f0;
+  border-bottom: 2px solid #94a3b8;
 }
 
-.pixel-minecart::after {
-  content: "";
+.cart-convoy {
   position: absolute;
-  bottom: -4px;
-  left: 3px;
-  width: 6px;
-  height: 4px;
-  background: #102027;
-  box-shadow: 16px 0 0 #102027;
+  inset: 0;
+  pointer-events: none;
 }
 
-.cart-cargo {
-  width: 14px;
+.micro-cart {
+  position: absolute;
+  bottom: 1px;
+  width: 24px;
   height: 14px;
-  background-color: var(--emerald-main);
-  border: 2px solid var(--emerald-dark);
-  margin-top: -6px;
+  background: #475569;
+  border: 2px solid #0f172a;
+  border-top: none;
+  animation: roll-rail linear infinite;
 }
 
-@keyframes roll-cart {
-  0%   { transform: translateX(-50px); }
-  100% { transform: translateX(calc(100vw + 50px)); }
+@keyframes roll-rail {
+  0%   { transform: translateX(-30px); }
+  100% { transform: translateX(calc(100vw - 430px)); }
 }
 
-/* Sol d'herbe cubique façon Minecraft */
-.grass-ground {
+.detailed-turf {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 68px;
-  background-color: var(--dirt-brown);
-  border-top: 10px solid var(--grass-top);
-  box-shadow: inset 0 6px 0 var(--grass-dirt);
-}
-
-/* Mouton cubique */
-.pixel-sheep {
-  position: absolute;
-  top: -24px;
-  left: 12%;
-  width: 28px;
-  height: 18px;
-  background: #eceff1;
-  border: 2px solid #b0bec5;
-  box-shadow: 
-    -8px 4px 0 #cfd8dc, /* Tête */
-    -10px 6px 0 #263238; /* Yeux */
-}
-
-.pixel-sheep::after {
-  content: "";
-  position: absolute;
-  bottom: -6px;
-  left: 2px;
-  width: 4px;
-  height: 6px;
-  background: #263238;
-  box-shadow: 16px 0 0 #263238; /* Pattes */
+  height: 56px;
+  background: #2b170e;
+  border-top: 8px solid #2e7d32;
+  box-shadow: inset 0 4px 0 #1b5e20;
 }
 
 /* ====================================================
-   INTERFACE & POLICES RÉTRO
+   LAYOUT INTERFACE : JEU + PANNEAU LIQUID GLASS
    ==================================================== */
-.ui-layer {
+.glass-split-layout {
   position: relative;
-  z-index: 5;
-  width: 100%;
-  max-width: 860px;
-  margin: 0 auto;
-  min-height: 100vh;
-  padding: 24px 16px;
+  z-index: 10;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* SCÈNE CENTRALE */
+.interactive-stage {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
+  padding: 24px 20px 84px;
 }
 
-.game-header {
+.stage-tag {
   text-align: center;
 }
 
-.kicker {
-  font-size: 0.65rem;
+.realm-pill {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.52rem;
   color: var(--gold);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 12px;
+  border: 2px solid var(--gold);
+  display: inline-block;
   margin-bottom: 8px;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px #000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.game-header h1 {
+.stage-tag h1 {
+  font-family: 'Press Start 2P', monospace;
   font-size: 1.4rem;
-  line-height: 1.4;
   color: #fff;
-  text-shadow: 3px 3px #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+  text-shadow: 2px 2px 0 #000;
 }
 
-.subtitle {
-  font-size: 0.55rem;
-  color: #d1d5db;
-  line-height: 1.6;
-  margin-top: 8px;
-  text-shadow: 1px 1px #000;
-}
-
-/* ====================================================
-   LE BLOC D'ÉMERAUDE AU CENTRE
-   ==================================================== */
-.mining-zone {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 12px 0;
-}
-
-.pixel-scoreboard {
-  background: var(--gui-bg);
-  border: 4px solid var(--gui-border-dark);
-  border-top-color: var(--gui-border-light);
-  border-left-color: var(--gui-border-light);
-  padding: 12px 20px;
+.retro-ticker {
+  background: rgba(15, 23, 42, 0.85);
+  border: 3px solid #334155;
+  padding: 12px 26px;
   text-align: center;
-  margin-bottom: 20px;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
-.count {
-  font-size: 1.8rem;
-  color: #facc15;
+.count-value {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 2.1rem;
+  color: #fde047;
   text-shadow: 2px 2px #000;
-  transition: transform 0.04s ease;
 }
 
-.unit {
-  font-size: 0.55rem;
-  color: #a7f3d0;
-  margin-top: 8px;
+.count-sub {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  color: #6ee7b7;
+  margin-top: 6px;
   letter-spacing: 1px;
 }
 
-.rate {
-  font-size: 0.5rem;
-  color: #9ca3af;
-  margin-top: 6px;
+.passive-val {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.46rem;
+  color: #94a3b8;
+  margin-top: 4px;
 }
 
-/* Bouton Bloc d'Émeraude Pixel Art */
-.emerald-voxel-wrapper {
-  perspective: 600px;
+/* GEMS PIXELISÉS CENTRAUX */
+.gem-matrix {
+  display: flex;
+  gap: 28px;
+  align-items: center;
 }
 
-.emerald-voxel-btn {
-  width: 140px;
-  height: 140px;
-  position: relative;
-  background-color: var(--emerald-main);
-  border: 6px solid #064e3b;
+.gem-anchor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.gem-anchor.is-locked {
+  display: none;
+}
+
+.gem-caption {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.45rem;
+  color: #cbd5e1;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 2px 6px;
+  border: 1px solid #475569;
+}
+
+.voxel-gem {
+  width: 125px;
+  height: 125px;
   cursor: pointer;
   outline: none;
-  /* Motif interne du bloc d'émeraude */
-  background-image:
-    linear-gradient(45deg, #047857 25%, transparent 25%),
-    linear-gradient(-45deg, #047857 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #34d399 75%),
-    linear-gradient(-45deg, transparent 75%, #34d399 75%);
-  background-size: 36px 36px;
-  background-position: 0 0, 0 18px, 18px -18px, -18px 0px;
-  box-shadow: 
-    inset 8px 8px 0 #34d399,
-    inset -8px -8px 0 #064e3b,
-    6px 6px 0 #000;
+  border: 4px solid var(--emerald-edge);
+  box-shadow: inset 6px 6px 0 var(--emerald-hi), inset -6px -6px 0 var(--emerald-edge), 6px 6px 0 rgba(0, 0, 0, 0.8);
   transition: transform 0.04s ease;
 }
 
-.emerald-voxel-btn:active {
-  transform: scale(0.92) translate(4px, 4px);
-  box-shadow: 
-    inset 8px 8px 0 #064e3b,
-    inset -8px -8px 0 #34d399,
-    2px 2px 0 #000;
+.voxel-gem.gem-a {
+  background: #047857 url('https://upload.wikimedia.org/wikipedia/commons/c/c2/N%27Golo_Kant%C3%A9_2018.jpg') center 20%/130% no-repeat;
+  filter: contrast(1.1);
+}
+
+.voxel-gem.gem-b {
+  background: #f59e0b;
+  border-color: #78350f;
+  box-shadow: inset 6px 6px 0 #fde047, inset -6px -6px 0 #78350f, 6px 6px 0 rgba(0, 0, 0, 0.8);
+}
+
+.voxel-gem:active {
+  transform: scale(0.94) translate(3px, 3px);
+  box-shadow: inset 6px 6px 0 var(--emerald-edge), inset -6px -6px 0 var(--emerald-hi), 2px 2px 0 #000;
 }
 
 /* ====================================================
-   BOUTIQUE FAÇON INTERFACE DE CRAFT / INVENTAIRE
+   PANNEAU DE CONFIGURATION « LIQUID GLASS »
    ==================================================== */
-.inventory-bazaar {
-  width: 100%;
-  background: var(--gui-bg);
-  border: 4px solid var(--gui-border-dark);
-  border-top-color: var(--gui-border-light);
-  border-left-color: var(--gui-border-light);
-  padding: 14px;
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.7);
+.liquid-glass-dock {
+  width: 420px;
+  height: 100vh;
+  position: relative;
+  background: rgba(12, 20, 29, 0.62);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-left: 1px solid var(--glass-border);
+  box-shadow: -10px 0 35px var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow: hidden;
 }
 
-.inventory-title {
+.dock-reflection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.dock-header {
   display: flex;
   justify-content: space-between;
-  font-size: 0.55rem;
-  color: #e5e7eb;
-  border-bottom: 4px solid var(--gui-border-dark);
-  padding-bottom: 8px;
-  margin-bottom: 12px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 14px;
+  margin-bottom: 14px;
 }
 
-.catalog {
+.dock-title-group h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.dock-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #34d399;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.glass-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* NAVIGATION MONDES LIQUID GLASS */
+.glass-nav {
+  margin-bottom: 16px;
+}
+
+.nav-pills {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
-.merch-slot {
-  background: #1f2327;
-  border: 3px solid var(--gui-border-dark);
-  border-top-color: #3b424b;
-  border-left-color: #3b424b;
-  padding: 8px;
+.glass-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 10px 8px;
+  color: #e2e8f0;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.glass-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.glass-pill.is-active {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.2) 100%);
+  border-color: #34d399;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.3);
+}
+
+.glass-pill.is-hidden {
+  display: none;
+}
+
+/* LISTE DU CATALOGUE (DÉVERROUILLAGE PROGRESSIF) */
+.glass-shelf {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 64px;
+  overflow: hidden;
+}
+
+.shelf-inventory {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+/* CARTE D'AMÉLIORATION LIQUID GLASS */
+.liquid-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   cursor: pointer;
+  font-family: inherit;
   text-align: left;
-  font-family: 'Press Start 2P', monospace;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: appear-reveal 0.35s ease forwards;
 }
 
-.merch-slot:hover:not(:disabled) {
-  background: #2b3137;
-  border-color: #60a5fa;
+@keyframes appear-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.merch-slot:active:not(:disabled) {
-  transform: translate(2px, 2px);
+.liquid-card:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-.merch-slot:disabled {
-  opacity: 0.4;
+.liquid-card:disabled {
+  opacity: 0.35;
   cursor: not-allowed;
-  filter: grayscale(0.8);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
-.slot-name {
-  font-size: 0.45rem;
-  color: #fff;
-  line-height: 1.3;
-}
-
-.slot-gain {
-  font-size: 0.4rem;
-  color: #34d399;
-  margin-top: 4px;
-  display: block;
-}
-
-.slot-deal {
+.card-top {
   display: flex;
   justify-content: space-between;
-  border-top: 2px solid #2d3238;
-  padding-top: 4px;
-  margin-top: 6px;
+  align-items: baseline;
 }
 
-.price {
-  font-size: 0.45rem;
-  color: #fbbf24;
+.card-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
 }
 
-.owned {
-  font-size: 0.45rem;
-  color: #9ca3af;
+.card-gain {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #34d399;
 }
 
-/* Slot légendaire */
-.relic-slot {
-  grid-column: span 3;
-  flex-direction: row;
-  align-items: center;
-  background: #2b1805;
-  border-color: #d97706;
-  min-height: 48px;
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6px;
 }
 
-.gold-text {
+.card-cost {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.card-qty {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* CARTE SPÉCIALE 2E BOUTON */
+.liquid-card.tier-duo {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(180, 83, 9, 0.08) 100%);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.liquid-card.tier-duo .card-name {
   color: #fde047;
-  text-shadow: 1px 1px #000;
 }
 
-.relic-sub {
-  color: #fed7aa;
+/* CARTE SPÉCIALE MONDE 2 */
+.liquid-card.tier-realm {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.2) 0%, rgba(14, 165, 233, 0.08) 100%);
+  border-color: rgba(56, 189, 248, 0.4);
 }
 
-/* Particules rétro pixelisées */
-.pixel-pop {
+.liquid-card.tier-realm .card-name {
+  color: #7dd3fc;
+}
+
+/* Particules de clics */
+.fine-pop {
   position: fixed;
   pointer-events: none;
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #34d399;
   text-shadow: 2px 2px #000;
   z-index: 100;
-  animation: pop-pixel 0.6s steps(6) forwards;
+  animation: pop-glide 0.6s ease-out forwards;
 }
 
-@keyframes pop-pixel {
+@keyframes pop-glide {
   0%   { transform: translate(-50%, -50%) translateY(0); opacity: 1; }
-  100% { transform: translate(-50%, -50%) translateY(-48px); opacity: 0; }
+  100% { transform: translate(-50%, -50%) translateY(-40px); opacity: 0; }
 }
 
-@media (max-width: 720px) {
-  .game-header h1 { font-size: 1rem; }
-  .count { font-size: 1.3rem; }
-  .emerald-voxel-btn { width: 110px; height: 110px; }
-  .catalog { grid-template-columns: 1fr; }
-  .relic-slot { grid-column: span 1; flex-direction: column; align-items: flex-start; }
+/* Responsive */
+@media (max-width: 950px) {
+  body { overflow-y: auto; }
+  .glass-split-layout { flex-direction: column; height: auto; }
+  .liquid-glass-dock { width: 100%; height: auto; }
+  .fine-rail-lane { right: 0; }
 }
