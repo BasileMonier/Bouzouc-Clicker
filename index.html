@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CLAC — RUN &amp; ATELIER</title>
+  <title>CLAC — IDLE ROGUE-LITE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/clicker.css">
-  <link rel="stylesheet" href="css/clicker.css?v=1.1">
+  <link rel="stylesheet" href="css/clicker.css?v=3.0">
 </head>
 <body id="sheet-body-element" class="view-hub">
 
@@ -28,25 +27,25 @@
 
   <div id="run-summary-modal" class="modal-backdrop is-hidden">
     <div class="modal-card">
-      <div class="modal-badge" id="modal-badge-status">RUN TERMINÉE</div>
-      <h2 id="modal-summary-title">BILAN D'EXTRACTION</h2>
-      <p class="modal-intro" id="modal-summary-desc">Le tirage a pris fin.</p>
+      <div class="modal-badge" id="modal-badge-status">EXTRACTION TERMINÉE</div>
+      <h2 id="modal-summary-title">BILAN DE PRODUCTION</h2>
+      <p class="modal-intro" id="modal-summary-desc">Le tirage de la presse a été sécurisé.</p>
       
       <div class="vault-deposit-box">
         <span class="deposit-label">ZOUCS SÉCURISÉS :</span>
         <span id="modal-deposit-amount" class="deposit-val">+0 Z</span>
       </div>
 
-      <button id="btn-return-home" class="btn-primary-action">RENTRER À LA MAISON [ATELIER]</button>
+      <button id="btn-return-home" class="btn-primary-action">RENTRER À L'ATELIER</button>
     </div>
   </div>
 
   <div id="gameover-overlay" class="modal-backdrop is-hidden">
     <div class="modal-card danger-card">
       <div class="modal-badge red">FAILLITE TECHNIQUE</div>
-      <h2>DÉPÔT DE BILAN (0 ZOUC)</h2>
-      <p class="modal-intro">L'encre a dévoré votre réserve. Tout l'argent non sécurisé de cette run est perdu.</p>
-      <button id="btn-restart-game" class="btn-primary-action red-btn">RÉOUVRIR UN DOSSIER [RETRY]</button>
+      <h2>DÉPÔT DE BILAN</h2>
+      <p class="modal-intro">L'encre a totalement submergé les roulements. Les profits non sécurisés sont perdus.</p>
+      <button id="btn-restart-game" class="btn-primary-action red-btn">RÉOUVRIR LE DOSSIER</button>
     </div>
   </div>
 
@@ -56,42 +55,43 @@
       <div class="header-top-nav">
         <div class="mode-tabs">
           <span class="brand-title-top">CLAC</span>
-          <button id="tab-nav-hub" class="mode-tab is-active">1. LA MAISON</button>
+          <button id="tab-nav-hub" class="mode-tab is-active">1. ATELIER</button>
           <button id="tab-nav-run" class="mode-tab">2. SALLE DES PRESSES</button>
           <button id="btn-toggle-pause" class="btn-pause-header is-hidden" title="Pause (P)">PAUSE [P]</button>
           <button id="btn-quit-run" class="btn-quit-header is-hidden" title="Quitter la run et garder 50%">ABANDONNER (50%)</button>
         </div>
 
         <div class="header-sub">
-          <span class="edition" id="status-header-tag">Atelier Central</span>
-          <span class="batch" id="sub-header-tag">Repos</span>
+          <span class="edition" id="status-header-tag">Matrice Centrale v3.0</span>
+          <span class="batch" id="sub-header-tag">Sécurisé</span>
         </div>
       </div>
       <div class="thick-rule"></div>
     </header>
 
+    <!-- VUE 1 : L'ATELIER -->
     <main id="view-hub-section" class="screen-view">
-      <div class="hub-grid">
+      <div class="hub-grid-3">
         
         <section class="hub-vault-col">
           <div class="meta-label">coffre-fort permanent</div>
           <div id="hub-vault-counter" class="giant-counter vault-color">0</div>
-          <span class="vault-subtext">Total sécurisé pour l'équipement et les améliorations</span>
+          <span class="vault-subtext">Capital sécurisé pour les investissements lourds</span>
 
           <div class="start-run-card">
-            <span class="run-card-title">DÉPART DU TIRAGE</span>
-            <p class="run-card-desc">Démarrez une expédition à 0 Zouc. Extrayez un maximum de ressources.</p>
-            <button id="btn-launch-run" class="btn-primary-action launch-btn">LANCER LA RUN [DÉPART]</button>
+            <span class="run-card-title">LANCEMENT D'UNE EXPÉDITION</span>
+            <p class="run-card-desc">Partez à 0 Zouc en zone d'impression. Extrayez un maximum de valeur.</p>
+            <button id="btn-launch-run" class="btn-primary-action launch-btn">DÉMARRER LA RUN</button>
           </div>
 
-          <div class="start-run-card" style="border-color: #d32f2f; margin-bottom: 18px;">
-            <span class="run-card-title" style="color: #d32f2f;">ZONE DE MAINTENANCE</span>
-            <p class="run-card-desc">Efface définitivement la progression et réinitialise l'atelier à zéro.</p>
-            <button id="btn-hard-reset" class="btn-primary-action red-btn" style="background: #d32f2f; border-color: #111;">RÉINITIALISER LE JEU</button>
+          <div class="start-run-card maintenance-card">
+            <span class="run-card-title red-text">ZONE DE MAINTENANCE</span>
+            <p class="run-card-desc">Remet à plat l'intégralité des registres et du cache.</p>
+            <button id="btn-hard-reset" class="btn-primary-action red-btn">RÉINITIALISER L'ATELIER</button>
           </div>
 
           <div class="hub-shop-card">
-            <div class="shop-headline">perfectionnements d'atelier &amp; passifs</div>
+            <div class="shop-headline">investissements permanents</div>
             <div id="hub-perks-list" class="technical-catalog"></div>
           </div>
         </section>
@@ -107,64 +107,70 @@
           </div>
 
           <div class="custom-card">
-            <span class="custom-label">PSEUDO DANS LE CARRÉ</span>
+            <span class="custom-label">IDENTIFIANT PRESSE</span>
             <div style="display: flex; gap: 6px;">
-              <input type="text" id="pseudo-input" placeholder="Votre pseudo..." class="style-choice-btn" style="flex: 1; background: #fff;" maxlength="8">
-              <button id="btn-save-pseudo" class="style-choice-btn" style="background: var(--ink-black); color: #fff;">OK</button>
+              <input type="text" id="pseudo-input" placeholder="Pseudo..." class="style-choice-btn" style="flex: 1; background: #fff;" maxlength="8">
+              <button id="btn-save-pseudo" class="style-choice-btn" style="background: var(--ink-black); color: #fff;"> OK </button>
             </div>
           </div>
 
           <div class="custom-card">
-            <span class="custom-label">FORME D'IMPRESSION</span>
+            <span class="custom-label">GÉOMÉTRIE DUBLIN</span>
             <div class="custom-btn-grid" id="shape-selectors"></div>
           </div>
 
           <div class="custom-card">
-            <span class="custom-label">TEINTE DE L'ENCRE</span>
+            <span class="custom-label">TEINTE DE L'ENCRE MÈRE</span>
             <div class="custom-btn-grid" id="color-selectors"></div>
           </div>
+        </section>
 
-          <div class="custom-card" id="image-upload-card">
-            <span class="custom-label" id="img-upload-title">IMAGE PERSO (BLOQUÉE)</span>
-            <input type="file" id="custom-image-input" accept="image/*" class="style-choice-btn" style="width: 100%; display: none;">
-            <button id="btn-remove-image" class="style-choice-btn" style="margin-top: 4px; color: #d32f2f; display: none;">Retirer l'image</button>
-            <span id="img-upload-info" style="font-size: 0.58rem; color: var(--muted-gray);">Achetez 'Matrice Photo Libre' pour l'activer.</span>
+        <section class="hub-social-col">
+          <div class="hub-shop-card black-market-box">
+            <div class="shop-headline bm-title">marché noir (contrebande)</div>
+            <div id="black-market-list" class="technical-catalog"></div>
+          </div>
+
+          <div class="hub-shop-card">
+            <div class="shop-headline">registre mondial des imprimeurs</div>
+            <div id="leaderboard-list" class="technical-catalog"></div>
           </div>
         </section>
 
       </div>
     </main>
 
+    <!-- VUE 2 : SALLE DES PRESSES -->
     <main id="view-run-section" class="screen-view is-hidden">
       
       <div id="floor-clear-banner" class="floor-clear-banner is-hidden">
         <div class="banner-text">
-          <span class="banner-title">PALIER FRANCHI !</span>
-          <span class="banner-sub">Encaissez vos gains ou continuez.</span>
+          <span class="banner-title" id="floor-banner-title">PALIER ATTEINT !</span>
+          <span class="banner-sub" id="floor-banner-sub">Encaissez vos gains ou repoussez les limites.</span>
         </div>
         <div class="banner-actions">
           <button id="btn-bank-and-leave" class="banner-btn secure-btn">SÉCURISER &amp; RENTRER</button>
-          <button id="btn-continue-run" class="banner-btn continue-btn">CONTINUER →</button>
+          <button id="btn-continue-run" class="banner-btn continue-btn">POURSUIVRE →</button>
         </div>
       </div>
 
       <div class="sheet-body">
         
         <section class="col-left">
-          <div class="meta-label">bénéfice net de la run</div>
+          <div class="meta-label" id="world-env-label">bénéfice net · monde 01</div>
           <div id="counter" class="giant-counter">0</div>
 
           <div class="metrics-row">
             <div class="metric-cell">
-              <span class="m-label">par seconde</span>
+              <span class="m-label">flux passif</span>
               <span id="stat-passive" class="m-val orange">+0.0</span>
             </div>
             <div class="metric-cell">
-              <span class="m-label">par clic</span>
+              <span class="m-label">puissance clic</span>
               <span id="stat-click" class="m-val orange">+1</span>
             </div>
             <div class="metric-cell">
-              <span class="m-label">objectif palier</span>
+              <span class="m-label">objectif de palier</span>
               <span id="stat-target" class="m-val orange-text">5 000 Z</span>
             </div>
           </div>
@@ -178,11 +184,10 @@
               <div id="heat-fill" class="heat-fill"></div>
             </div>
             <div id="heat-warning" class="heat-warning-banner is-hidden">
-              ! BOURRAGE PAPIER : PRESSE BLOQUÉE !
+              ! BOURRAGE PAPIER : SYSTÈME VERROUILLÉ !
             </div>
           </div>
 
-          <!-- BAC DE JEU AGRANDI -->
           <div class="movement-sandbox" id="sandbox">
             <button id="active-square" class="floating-black-tile" aria-label="Cible principale">
               <span id="run-tile-title" class="tile-title">CLAC</span>
@@ -194,7 +199,6 @@
               <span id="beta-gain" class="tile-sub">+3</span>
             </button>
 
-            <!-- RONDS DE REBUT RÉTRÉCIS -->
             <button id="hazard-square-1" class="hazard-circle" aria-label="Piège 1">
               <span class="hazard-title">REBUT</span>
             </button>
@@ -209,15 +213,23 @@
 
         <section class="col-right">
           <div class="shop-nav-strip">
-            <span class="shop-headline">machines provisoires (run)</span>
+            <span class="shop-headline">machines provisoires</span>
           </div>
-          <div id="catalog-list" class="technical-catalog"></div>
+          <div id="catalog-list" class="technical-catalog" style="margin-bottom: 16px;"></div>
+
+          <div class="shop-nav-strip">
+            <span class="shop-headline" style="color: var(--vault-gold);">registre des bonus actifs</span>
+          </div>
+          <div id="active-bonuses-list" class="technical-catalog active-bonus-box">
+            <span style="font-size: 0.65rem; color: var(--muted-gray);">Aucun catalyseur actif.</span>
+          </div>
         </section>
 
       </div>
     </main>
 
   </div>
-  <script src="JavaScript/script.js?v=1.1"></script>
+
+  <script src="JavaScript/script.js?v=3.0"></script>
 </body>
 </html>

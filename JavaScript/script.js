@@ -1,10 +1,11 @@
-// --- SYSTÈME DE SAUVEGARDE PERSISTANTE & GESTION DE VERSION ---
-const GAME_VERSION = '1.1'; // Change cette valeur (ex: '1.2', '1.3') à chaque mise à jour majeure sur ton site
+// --- VERSION & SAUVEGARDE PERSISTANTE ---
+const GAME_VERSION = '3.0';
 
 if (localStorage.getItem('clac_version') !== GAME_VERSION) {
-  localStorage.removeItem('clac_roguelite_save'); // Efface l'ancienne sauvegarde si elle est incompatible avec la nouvelle version
+  localStorage.removeItem('clac_roguelite_save');
   localStorage.setItem('clac_version', GAME_VERSION);
 }
+
 let saved = {};
 try {
   saved = JSON.parse(localStorage.getItem('clac_roguelite_save') || '{}');
@@ -14,9 +15,9 @@ try {
 
 let vaultZoucs = typeof saved.vaultZoucs === 'number' ? saved.vaultZoucs : 0;
 let unlockedShapes = saved.unlockedShapes || ['square'];
-let unlockedColors = saved.unlockedColors || ['#111111'];
+let unlockedColors = saved.unlockedColors || ['#121212'];
 let customShape = saved.customShape || 'square';
-let customColor = saved.customColor || '#111111';
+let customColor = saved.customColor || '#121212';
 let customImageSrc = saved.customImageSrc || null;
 let playerPseudo = saved.playerPseudo || 'CLAC';
 
@@ -26,11 +27,14 @@ let permanentPerks = saved.permanentPerks || {
   shieldMastery: 0,
   betaUnlock: false,
   customImgUnlocked: false,
-  thermalVent: false,     // Réduit la surchauffe de 50%
-  quantumResonance: false // Double l'efficacité des items de run
+  thermalVent: false,
+  quantumResonance: false
 };
 
-// État de la run
+let blackMarketPassives = saved.blackMarketPassives || {
+  vampireInk: false
+};
+
 let inRun = false;
 let isPaused = false;
 let zoucs = 0;
@@ -41,18 +45,16 @@ let heat = 0;
 let isJammed = false;
 let isFrozen = false;
 
-// Bavure géante
 let megaStainActive = false;
 let megaStainHp = 6;
 let megaStainInterval = null;
 
-// CONFIGURATION DES MONDES
 const WORLDS = {
-  1: { name: "Monde 01 · Papier Naturel", class: "world-1", scoreGoal: 5000, tileSize: 125, heatRate: 6.5, hazardCount: 1, orbInterval: 4500 },
-  2: { name: "Monde 02 · Épreuve Carbone", class: "world-2", scoreGoal: 50000, tileSize: 110, heatRate: 8.5, hazardCount: 1, orbInterval: 3600 },
-  3: { name: "Monde 03 · Zone Indigo", class: "world-3", scoreGoal: 500000, tileSize: 95, heatRate: 10.5, hazardCount: 2, orbInterval: 2800 },
-  4: { name: "Monde 04 · Cuivre Thermique", class: "world-4", scoreGoal: 3000000, tileSize: 85, heatRate: 12.0, hazardCount: 2, orbInterval: 2200 },
-  5: { name: "Monde 05 · Atelier Noir Absolu", class: "world-5", scoreGoal: 20000000, tileSize: 75, heatRate: 14.0, hazardCount: 3, orbInterval: 1600 }
+  1: { name: "Monde 01 · Papier Naturel", class: "world-1", scoreGoal: 5000, tileSize: 125, heatRate: 6.5, hazardCount: 1, orbInterval: 4500, sandboxClass: "" },
+  2: { name: "Monde 02 · Épreuve Carbone", class: "world-2", scoreGoal: 50000, tileSize: 110, heatRate: 8.5, hazardCount: 1, orbInterval: 3600, sandboxClass: "sandbox-shape-circle" },
+  3: { name: "Monde 03 · Zone Indigo", class: "world-3", scoreGoal: 500000, tileSize: 95, heatRate: 10.5, hazardCount: 2, orbInterval: 2800, sandboxClass: "sandbox-shape-diamond" },
+  4: { name: "Monde 04 · Cuivre Thermique", class: "world-4", scoreGoal: 3000000, tileSize: 85, heatRate: 12.0, hazardCount: 2, orbInterval: 2200, sandboxClass: "" },
+  5: { name: "Monde 05 · Atelier Noir Absolu", class: "world-5", scoreGoal: 20000000, tileSize: 75, heatRate: 14.0, hazardCount: 3, orbInterval: 1600, sandboxClass: "sandbox-shape-star" }
 };
 
 let runCatalog = [
@@ -70,7 +72,6 @@ let runCatalog = [
   { id: 'a6', name: 'matrice plasma', gainDesc: '+200000/sec', baseCost: 75000000, cost: 75000000, gainClick: 0, gainAuto: 200000, minWorld: 5, qty: 0, mult: 1.35 }
 ];
 
-// NOUVEAUX PASSIFS PERMANENTS ÉQUILIBRÉS ET UTILE (NOTAMMENT LE CARRÉ BÊTA)
 const hubUpgrades = [
   { id: 'perm_click', name: 'Enclume d’Acier', desc: '+5 Clic de base en run', cost: 400, apply: () => { permanentPerks.clickBonus += 5; } },
   { id: 'perm_slow', name: 'Roulements Lubrifiés', desc: 'Vitesse de départ -40%', cost: 1000, apply: () => { permanentPerks.startSlow += 0.4; } },
@@ -81,6 +82,16 @@ const hubUpgrades = [
   { id: 'perm_custom_img', name: 'Matrice Photo Libre', desc: 'Débloque l’import d’une image perso', cost: 10000, apply: () => { permanentPerks.customImgUnlocked = true; } }
 ];
 
+const blackMarketItems = [
+  { id: 'bm_gamble', name: 'Pari d’Encre', desc: 'Coûte 1000Z · 50% de doubler son coffre, 50% de tout perdre', cost: 1000, apply: () => {
+    if (Math.random() < 0.5) { vaultZoucs *= 2; alert("Coup de maître ! Votre coffre a doublé !"); }
+    else { vaultZoucs = 0; alert("Contrôle fiscal ! Le coffre a été saisi (0 Zouc)."); }
+  }},
+  { id: 'bm_vampire', name: 'Siphon Noir', desc: 'Rend 1% des Zoucs engrangés en coffre permanent', cost: 7500, apply: () => {
+    blackMarketPassives.vampireInk = true;
+  }}
+];
+
 const cosmeticCatalog = {
   shapes: [
     { id: 'square', name: 'Carré', cost: 0 },
@@ -89,24 +100,24 @@ const cosmeticCatalog = {
     { id: 'pill', name: 'Gélule', cost: 3500 }
   ],
   colors: [
-    { id: '#111111', name: 'Carbone', cost: 0 },
-    { id: '#ff5722', name: 'Orange', cost: 500 },
+    { id: '#121212', name: 'Carbone', cost: 0 },
+    { id: '#ea580c', name: 'Orange', cost: 500 },
     { id: '#0284c7', name: 'Cobalt', cost: 1200 },
     { id: '#15803d', name: 'Sauge', cost: 2500 }
   ]
 };
 
-// --- DOM REFERENCES ---
 let sheetBodyEl, tabNavHub, tabNavRun, viewHubSection, viewRunSection, btnTogglePause, btnQuitRun;
 let hubVaultCounter, btnLaunchRun, hubPerksList, hubStaticSquare, hubTileTitle, runTileTitle, pseudoInput, btnSavePseudo;
 let shapeSelectors, colorSelectors, imageUploadCard, customImageInput, btnRemoveImage, imgUploadTitle, imgUploadInfo;
 let runSummaryModal, gameoverOverlay, modalBadgeStatus, modalSummaryTitle, modalDepositAmount, btnReturnHome, btnRestartGame;
-let floorClearBanner, btnBankAndLeave, btnContinueRun;
-let counterEl, statPassiveEl, statClickEl, statTargetEl, statFloorEl;
+let floorClearBanner, floorBannerTitle, floorBannerSub, btnBankAndLeave, btnContinueRun;
+let counterEl, statPassiveEl, statClickEl, statTargetEl, statFloorEl, worldEnvLabel;
 let heatFill, heatStatus, heatWarning;
 let sandboxEl, activeSquare, tileGainEl, betaSquare;
 let hazard1, hazard2, hazard3;
 let catalogListEl, projectilesLayer, freeInkStain, stainHpPill;
+let blackMarketListEl, leaderboardListEl, activeBonusesListEl;
 
 function initDomReferences() {
   sheetBodyEl = document.getElementById('sheet-body-element');
@@ -143,6 +154,8 @@ function initDomReferences() {
   btnRestartGame = document.getElementById('btn-restart-game');
 
   floorClearBanner = document.getElementById('floor-clear-banner');
+  floorBannerTitle = document.getElementById('floor-banner-title');
+  floorBannerSub = document.getElementById('floor-banner-sub');
   btnBankAndLeave = document.getElementById('btn-bank-and-leave');
   btnContinueRun = document.getElementById('btn-continue-run');
 
@@ -151,6 +164,7 @@ function initDomReferences() {
   statClickEl = document.getElementById('stat-click');
   statTargetEl = document.getElementById('stat-target');
   statFloorEl = document.getElementById('stat-floor');
+  worldEnvLabel = document.getElementById('world-env-label');
 
   heatFill = document.getElementById('heat-fill');
   heatStatus = document.getElementById('heat-status');
@@ -169,6 +183,10 @@ function initDomReferences() {
   projectilesLayer = document.getElementById('projectiles-layer');
   freeInkStain = document.getElementById('free-ink-stain');
   stainHpPill = document.getElementById('stain-hp-pill');
+
+  blackMarketListEl = document.getElementById('black-market-list');
+  leaderboardListEl = document.getElementById('leaderboard-list');
+  activeBonusesListEl = document.getElementById('active-bonuses-list');
 }
 
 function formatNum(num) {
@@ -238,6 +256,60 @@ function renderHub() {
       }
     });
     hubPerksList.appendChild(row);
+  }
+
+  if (blackMarketListEl) {
+    blackMarketListEl.innerHTML = '';
+    for (const bm of blackMarketItems) {
+      const row = document.createElement('button');
+      row.className = 'tech-row-item';
+      row.disabled = vaultZoucs < bm.cost;
+      row.innerHTML = `
+        <span class="t-name" style="color: #ea580c;">${bm.name}</span>
+        <div class="t-metrics">
+          <span class="t-gain">${bm.desc}</span>
+          <span class="t-price">${formatNum(bm.cost)} Z</span>
+        </div>
+      `;
+      row.addEventListener('click', () => {
+        if (vaultZoucs >= bm.cost) {
+          vaultZoucs -= bm.cost;
+          bm.apply();
+          renderHub();
+          saveGame();
+        }
+      });
+      blackMarketListEl.appendChild(row);
+    }
+  }
+
+  // Chargement du classement en ligne (ou mode simulé si hors-ligne)
+  if (leaderboardListEl) {
+    fetch('leaderboard.php')
+      .then(res => res.json())
+      .then(data => {
+        leaderboardListEl.innerHTML = '';
+        if (!data || data.length === 0) {
+          leaderboardListEl.innerHTML = `<div class="tech-row-item"><span class="t-name">1. ${playerPseudo}</span><span class="t-price">${formatNum(vaultZoucs)} Z</span></div>`;
+          return;
+        }
+        data.forEach((leader, index) => {
+          const div = document.createElement('div');
+          div.className = 'tech-row-item';
+          if (leader.pseudo === playerPseudo) div.style.fontWeight = 'bold';
+          div.innerHTML = `
+            <span class="t-name">${index + 1}. ${leader.pseudo}</span>
+            <span class="t-price" style="color: var(--vault-gold);">${formatNum(leader.score)} Z</span>
+          `;
+          leaderboardListEl.appendChild(div);
+        });
+      })
+      .catch(() => {
+        leaderboardListEl.innerHTML = `
+          <div class="tech-row-item"><span class="t-name">1. ${playerPseudo} (Toi)</span><span class="t-price">${formatNum(vaultZoucs)} Z</span></div>
+          <div class="tech-row-item"><span class="t-name">2. Gutenberg_99</span><span class="t-price">125 000 Z</span></div>
+        `;
+      });
   }
 
   shapeSelectors.innerHTML = '';
@@ -369,12 +441,19 @@ function endRun(isVictory = false, isAbandoned = false) {
 
   vaultZoucs += secured;
 
-  if (modalBadgeStatus) modalBadgeStatus.textContent = isVictory ? "EXTRACTION RÉUSSIE" : isAbandoned ? "ABANDON STRATÉGIQUE" : "TIRAGE ANÉANTI";
-  if (modalSummaryTitle) modalSummaryTitle.textContent = isVictory ? "BÉNÉFICES SÉCURISÉS" : isAbandoned ? "50% DES GAINS SAUVÉS" : "MORT EN ÉPREUVE";
+  if (modalBadgeStatus) modalBadgeStatus.textContent = isVictory ? "EXTRACTION RÉUSSIE" : isAbandoned ? "ABANDON STRATÉGIQUE" : "ÉCHEC TECHNIQUE";
+  if (modalSummaryTitle) modalSummaryTitle.textContent = isVictory ? "BÉNÉFICES SÉCURISÉS" : isAbandoned ? "50% DES GAINS SAUVÉS" : "TIRAGE INTERROMPU";
   if (modalDepositAmount) modalDepositAmount.textContent = `+${formatNum(secured)} Z`;
   if (runSummaryModal) runSummaryModal.classList.remove('is-hidden');
 
   saveGame();
+
+  // Envoi automatique au serveur PHP du classement en ligne
+  fetch('leaderboard.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pseudo: playerPseudo, score: vaultZoucs })
+  }).catch(() => {});
 }
 
 function checkRunFail() {
@@ -384,7 +463,7 @@ function checkRunFail() {
   }
 }
 
-// PHYSIQUE DES CIBLES & Ronds Rebuts
+// PHYSIQUE DES CIBLES & REBUTS FLUIDES
 let posX = 20, posY = 20, dirX = 1, dirY = 1;
 let betaX = 60, betaY = 60, betaDirX = -1, betaDirY = 1;
 
@@ -417,7 +496,6 @@ function updatePhysics() {
       activeSquare.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
     }
 
-    // Le Carré Bêta transfère désormais 10% de sa puissance en passif global pour le rendre utile
     if (permanentPerks.betaUnlock && !isJammed && !isFrozen && betaSquare) {
       const bDim = Math.round(currentDim * 0.65);
       const bMaxW = Math.max(10, rect.width - bDim);
@@ -437,7 +515,7 @@ function updatePhysics() {
     }
 
     const activeHazCount = WORLDS[currentWorld].hazardCount;
-    const hDim = 48;
+    const hDim = 44;
     const hMaxW = Math.max(10, rect.width - hDim);
     const hMaxH = Math.max(10, rect.height - hDim);
     const hSpeed = (0.7 + currentWorld * 0.5);
@@ -471,7 +549,6 @@ function handleHazardHit(hElement) {
   const x = box.left + box.width / 2;
   const y = box.top + box.height / 2;
 
-  // Plaque Pare-Choc améliorée à 75% d'esquive
   if (permanentPerks.shieldMastery && Math.random() < 0.75) {
     spawnParticle(x, y, 'ESQUIVÉ !', false);
     return;
@@ -488,7 +565,6 @@ function handleHazardHit(hElement) {
   refreshUI();
 }
 
-// BAVURE LIBRE
 function triggerFreeInkStain() {
   if (!inRun || currentWorld < 2 || megaStainActive || isPaused || !freeInkStain || !stainHpPill) return;
 
@@ -533,7 +609,6 @@ function hideFreeStain() {
 
 setInterval(triggerFreeInkStain, 30000);
 
-// ORBES & GEL
 const activeProjectiles = [];
 
 function spawnIncomingOrb() {
@@ -640,7 +715,6 @@ function restartOrbSpawner() {
   orbTimer = setInterval(spawnIncomingOrb, WORLDS[currentWorld].orbInterval);
 }
 
-// PAUSE
 function setPauseState(paused) {
   if (!inRun) return;
   isPaused = paused;
@@ -661,7 +735,6 @@ function setPauseState(paused) {
   }
 }
 
-// SURCHAUFFE (Turbine Thermique réduit de 50%)
 function getHeatMultiplier() {
   if (isJammed || isFrozen || isPaused) return 1.0;
   return 1.0 + parseFloat(((heat / 100) * 2.0).toFixed(1));
@@ -679,7 +752,7 @@ function registerStrokeHeat() {
   if (!inRun || isJammed || isPaused) return;
 
   let rate = WORLDS[currentWorld].heatRate;
-  if (permanentPerks.thermalVent) rate *= 0.5; // -50% de surchauffe
+  if (permanentPerks.thermalVent) rate *= 0.5;
   heat = Math.min(100, heat + rate);
   updateHeatUI();
 
@@ -707,14 +780,18 @@ function triggerJam() {
   }, 3000);
 }
 
-// CLICS EN RUN
 function handleMainClick(e) {
   if (!inRun || isJammed || isFrozen || isPaused) return;
 
   registerStrokeHeat();
 
   const boost = getHeatMultiplier();
-  const finalGain = Math.round(clickPower * boost);
+  let finalGain = Math.round(clickPower * boost);
+  
+  if (blackMarketPassives.vampireInk) {
+    vaultZoucs += Math.max(1, Math.round(finalGain * 0.01));
+  }
+
   zoucs += finalGain;
 
   if (zoucs >= WORLDS[currentWorld].scoreGoal) {
@@ -738,10 +815,15 @@ function applyWorldSettings() {
   if (sheetBodyEl) sheetBodyEl.className = `${w.class} view-run`;
   if (statFloorEl) statFloorEl.textContent = `0${currentWorld}`;
   if (statTargetEl) statTargetEl.textContent = currentWorld < 5 ? `${formatNum(w.scoreGoal)} Z` : 'MAX';
+  if (worldEnvLabel) worldEnvLabel.textContent = `bénéfice net · ${w.name.toLowerCase()}`;
 
   if (activeSquare) {
     activeSquare.style.width = `${w.tileSize}px`;
     activeSquare.style.height = `${w.tileSize}px`;
+  }
+
+  if (sandboxEl) {
+    sandboxEl.className = `movement-sandbox ${w.sandboxClass}`;
   }
 
   if (hazard1) hazard1.classList.toggle('is-hidden', w.hazardCount < 1);
@@ -753,7 +835,6 @@ function applyWorldSettings() {
   refreshUI();
 }
 
-// BOUTIQUE DE RUN (Résonance Quantique double l'efficacité)
 function setupRunCatalog() {
   if (!catalogListEl) return;
   catalogListEl.innerHTML = '';
@@ -804,6 +885,53 @@ function buyRunItem(item) {
   refreshUI();
 }
 
+function updateActiveBonusesUI() {
+  if (!activeBonusesListEl) return;
+  activeBonusesListEl.innerHTML = '';
+  
+  let hasBonus = false;
+
+  if (permanentPerks.clickBonus > 0) {
+    hasBonus = true;
+    activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name">Enclume d'Acier</span><span class="t-gain">+${permanentPerks.clickBonus} Clic</span></div>`;
+  }
+  if (permanentPerks.startSlow > 0) {
+    hasBonus = true;
+    activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name">Roulements Lubrifiés</span><span class="t-gain">Vitesse -40%</span></div>`;
+  }
+  if (permanentPerks.betaUnlock) {
+    hasBonus = true;
+    activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name">Satellite Bêta</span><span class="t-gain">Actif (+10% passif)</span></div>`;
+  }
+  if (permanentPerks.shieldMastery) {
+    hasBonus = true;
+    activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name">Plaque Pare-Choc</span><span class="t-gain">75% Esquive Rebuts</span></div>`;
+  }
+  if (permanentPerks.thermalVent) {
+    hasBonus = true;
+    activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name">Turbine Thermique</span><span class="t-gain">-50% Surchauffe</span></div>`;
+  }
+  if (permanentPerks.quantumResonance) {
+    hasBonus = true;
+    activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name">Résonance Quantique</span><span class="t-gain">Items x2</span></div>`;
+  }
+  if (blackMarketPassives.vampireInk) {
+    hasBonus = true;
+    activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name" style="color:#ea580c;">Siphon Noir</span><span class="t-gain">1% Vers Coffre</span></div>`;
+  }
+
+  for (const item of runCatalog) {
+    if (item.qty && item.qty > 0) {
+      hasBonus = true;
+      activeBonusesListEl.innerHTML += `<div class="tech-row-item"><span class="t-name">${item.name} (x${item.qty})</span><span class="t-gain">${item.gainDesc}</span></div>`;
+    }
+  }
+
+  if (!hasBonus) {
+    activeBonusesListEl.innerHTML = `<span style="font-size: 0.60rem; color: var(--muted-gray);">Aucun catalyseur actif.</span>`;
+  }
+}
+
 function refreshUI() {
   if (counterEl) counterEl.textContent = formatNum(zoucs);
   if (statPassiveEl) statPassiveEl.textContent = `+${passiveIncome.toFixed(1)}`;
@@ -811,6 +939,7 @@ function refreshUI() {
   if (tileGainEl) tileGainEl.textContent = `+${clickPower}`;
 
   updateShopVisibility();
+  updateActiveBonusesUI();
 }
 
 function saveGame() {
@@ -822,18 +951,18 @@ function saveGame() {
     customColor,
     customImageSrc,
     playerPseudo,
-    permanentPerks
+    permanentPerks,
+    blackMarketPassives
   };
   localStorage.setItem('clac_roguelite_save', JSON.stringify(payload));
 }
 setInterval(saveGame, 3000);
 
-// REVENU PASSIF EN RUN (Le Carré Bêta transfère 10% de sa production globale si débloqué)
 setInterval(() => {
   if (inRun && !isJammed && !isPaused) {
     let totalPassive = passiveIncome;
     if (permanentPerks.betaUnlock) {
-      totalPassive += (clickPower * 0.1); // Apporte 10% du clic de base en passif permanent
+      totalPassive += (clickPower * 0.1);
     }
     if (totalPassive > 0) {
       zoucs += totalPassive / 10;
@@ -843,18 +972,9 @@ setInterval(() => {
   }
 }, 100);
 
-// ÉVÉNEMENTS DOM
 document.addEventListener('DOMContentLoaded', () => {
   initDomReferences();
-const btnHardReset = document.getElementById('btn-hard-reset');
-if (btnHardReset) {
-  btnHardReset.addEventListener('click', () => {
-    if (confirm("Voulez-vous vraiment tout effacer et recommencer à zéro ?")) {
-      localStorage.clear();
-      location.reload();
-    }
-  });
-}
+
   if (tabNavHub) tabNavHub.addEventListener('click', () => { if (!inRun) showView('hub'); });
   if (tabNavRun) tabNavRun.addEventListener('click', () => { if (inRun) showView('run'); });
   if (btnLaunchRun) btnLaunchRun.addEventListener('click', startNewRun);
@@ -920,6 +1040,16 @@ if (btnHardReset) {
     });
   }
 
+  const btnHardReset = document.getElementById('btn-hard-reset');
+  if (btnHardReset) {
+    btnHardReset.addEventListener('click', () => {
+      if (confirm("Voulez-vous vraiment tout effacer et recommencer à zéro ?")) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
+  }
+
   if (btnSavePseudo) {
     btnSavePseudo.addEventListener('click', () => {
       if (pseudoInput) {
@@ -927,6 +1057,7 @@ if (btnHardReset) {
         if (val) {
           playerPseudo = val.substring(0, 8);
           applyCosmetics();
+          renderHub();
           saveGame();
         }
       }
