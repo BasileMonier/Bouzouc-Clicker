@@ -19,7 +19,9 @@ let permanentPerks = saved.permanentPerks || {
   startSlow: 0,
   shieldMastery: 0,
   betaUnlock: false,
-  customImgUnlocked: false
+  customImgUnlocked: false,
+  thermalVent: false,     // Réduit la surchauffe de 50%
+  quantumResonance: false // Double l'efficacité des items de run
 };
 
 // État de la run
@@ -62,11 +64,14 @@ let runCatalog = [
   { id: 'a6', name: 'matrice plasma', gainDesc: '+200000/sec', baseCost: 75000000, cost: 75000000, gainClick: 0, gainAuto: 200000, minWorld: 5, qty: 0, mult: 1.35 }
 ];
 
+// NOUVEAUX PASSIFS PERMANENTS ÉQUILIBRÉS ET UTILE (NOTAMMENT LE CARRÉ BÊTA)
 const hubUpgrades = [
-  { id: 'perm_click', name: 'Enclume d’Acier', desc: '+2 Clic de base en run', cost: 500, apply: () => { permanentPerks.clickBonus += 2; } },
-  { id: 'perm_slow', name: 'Roulements Lubrifiés', desc: 'Vitesse de départ -30%', cost: 1200, apply: () => { permanentPerks.startSlow += 0.3; } },
-  { id: 'perm_beta', name: 'Satellite Permanent', desc: 'Active le carré Bêta d’office', cost: 5000, apply: () => { permanentPerks.betaUnlock = true; } },
-  { id: 'perm_shield', name: 'Plaque Pare-Choc', desc: '50% d’esquiver les Rebuts', cost: 12000, apply: () => { permanentPerks.shieldMastery = 1; } },
+  { id: 'perm_click', name: 'Enclume d’Acier', desc: '+5 Clic de base en run', cost: 400, apply: () => { permanentPerks.clickBonus += 5; } },
+  { id: 'perm_slow', name: 'Roulements Lubrifiés', desc: 'Vitesse de départ -40%', cost: 1000, apply: () => { permanentPerks.startSlow += 0.4; } },
+  { id: 'perm_beta', name: 'Satellite Bêta Actif', desc: 'Génère 10% de sa puissance en passif global', cost: 3500, apply: () => { permanentPerks.betaUnlock = true; } },
+  { id: 'perm_shield', name: 'Plaque Pare-Choc', desc: '75% d’esquiver les Ronds Rebuts', cost: 8000, apply: () => { permanentPerks.shieldMastery = 1; } },
+  { id: 'perm_thermal', name: 'Turbine Thermique', desc: '-50% de surchauffe de presse', cost: 15000, apply: () => { permanentPerks.thermalVent = true; } },
+  { id: 'perm_quantum', name: 'Résonance Quantique', desc: 'Double l’effet de tous les items de run', cost: 40000, apply: () => { permanentPerks.quantumResonance = true; } },
   { id: 'perm_custom_img', name: 'Matrice Photo Libre', desc: 'Débloque l’import d’une image perso', cost: 10000, apply: () => { permanentPerks.customImgUnlocked = true; } }
 ];
 
@@ -85,7 +90,7 @@ const cosmeticCatalog = {
   ]
 };
 
-// --- DOM REFERENCES (Initialisées au chargement) ---
+// --- DOM REFERENCES ---
 let sheetBodyEl, tabNavHub, tabNavRun, viewHubSection, viewRunSection, btnTogglePause, btnQuitRun;
 let hubVaultCounter, btnLaunchRun, hubPerksList, hubStaticSquare, hubTileTitle, runTileTitle, pseudoInput, btnSavePseudo;
 let shapeSelectors, colorSelectors, imageUploadCard, customImageInput, btnRemoveImage, imgUploadTitle, imgUploadInfo;
@@ -164,7 +169,6 @@ function formatNum(num) {
   return Math.floor(num).toLocaleString('fr-FR');
 }
 
-// 1. PARTICULES
 function spawnParticle(x, y, text, isDanger = false) {
   const node = document.createElement('div');
   node.className = `tech-pop-particle ${isDanger ? 'danger' : ''}`;
@@ -176,7 +180,6 @@ function spawnParticle(x, y, text, isDanger = false) {
   setTimeout(() => node.remove(), 450);
 }
 
-// 2. NAVIGATION VUES
 function showView(view) {
   if (view === 'hub') {
     viewHubSection.classList.remove('is-hidden');
@@ -197,7 +200,6 @@ function showView(view) {
   }
 }
 
-// 3. LA MAISON (BOUTIQUE PERMANENTE)
 function renderHub() {
   hubVaultCounter.textContent = formatNum(vaultZoucs);
   pseudoInput.value = playerPseudo;
@@ -208,7 +210,9 @@ function renderHub() {
     row.className = 'tech-row-item';
     const isOwned = (up.id === 'perm_beta' && permanentPerks.betaUnlock) || 
                     (up.id === 'perm_shield' && permanentPerks.shieldMastery) ||
-                    (up.id === 'perm_custom_img' && permanentPerks.customImgUnlocked);
+                    (up.id === 'perm_custom_img' && permanentPerks.customImgUnlocked) ||
+                    (up.id === 'perm_thermal' && permanentPerks.thermalVent) ||
+                    (up.id === 'perm_quantum' && permanentPerks.quantumResonance);
     row.disabled = isOwned || vaultZoucs < up.cost;
 
     row.innerHTML = `
@@ -311,11 +315,10 @@ function applyCosmetics() {
   document.documentElement.style.setProperty('--custom-tile-bg', customColor);
 }
 
-// 4. LANCEMENT D'UNE RUN
 function startNewRun() {
   inRun = true;
   isPaused = false;
-  zoucs = 0; // STRICTEMENT 0 Z AU DÉPART
+  zoucs = 0;
   clickPower = 1 + permanentPerks.clickBonus;
   passiveIncome = 0;
   currentWorld = 1;
@@ -375,7 +378,7 @@ function checkRunFail() {
   }
 }
 
-// 5. PHYSIQUE DES CIBLES & REBUTS
+// PHYSIQUE DES CIBLES & Ronds Rebuts
 let posX = 20, posY = 20, dirX = 1, dirY = 1;
 let betaX = 60, betaY = 60, betaDirX = -1, betaDirY = 1;
 
@@ -408,6 +411,7 @@ function updatePhysics() {
       activeSquare.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
     }
 
+    // Le Carré Bêta transfère désormais 10% de sa puissance en passif global pour le rendre utile
     if (permanentPerks.betaUnlock && !isJammed && !isFrozen && betaSquare) {
       const bDim = Math.round(currentDim * 0.65);
       const bMaxW = Math.max(10, rect.width - bDim);
@@ -427,7 +431,7 @@ function updatePhysics() {
     }
 
     const activeHazCount = WORLDS[currentWorld].hazardCount;
-    const hDim = 75;
+    const hDim = 48;
     const hMaxW = Math.max(10, rect.width - hDim);
     const hMaxH = Math.max(10, rect.height - hDim);
     const hSpeed = (0.7 + currentWorld * 0.5);
@@ -461,8 +465,9 @@ function handleHazardHit(hElement) {
   const x = box.left + box.width / 2;
   const y = box.top + box.height / 2;
 
-  if (permanentPerks.shieldMastery && Math.random() < 0.5) {
-    spawnParticle(x, y, 'PARÉ (50%) !', false);
+  // Plaque Pare-Choc améliorée à 75% d'esquive
+  if (permanentPerks.shieldMastery && Math.random() < 0.75) {
+    spawnParticle(x, y, 'ESQUIVÉ !', false);
     return;
   }
 
@@ -477,7 +482,7 @@ function handleHazardHit(hElement) {
   refreshUI();
 }
 
-// 6. BAVURE LIBRE
+// BAVURE LIBRE
 function triggerFreeInkStain() {
   if (!inRun || currentWorld < 2 || megaStainActive || isPaused || !freeInkStain || !stainHpPill) return;
 
@@ -522,7 +527,7 @@ function hideFreeStain() {
 
 setInterval(triggerFreeInkStain, 30000);
 
-// 7. ORBES & GEL
+// ORBES & GEL
 const activeProjectiles = [];
 
 function spawnIncomingOrb() {
@@ -629,7 +634,7 @@ function restartOrbSpawner() {
   orbTimer = setInterval(spawnIncomingOrb, WORLDS[currentWorld].orbInterval);
 }
 
-// 8. PAUSE
+// PAUSE
 function setPauseState(paused) {
   if (!inRun) return;
   isPaused = paused;
@@ -650,7 +655,7 @@ function setPauseState(paused) {
   }
 }
 
-// 9. SURCHAUFFE
+// SURCHAUFFE (Turbine Thermique réduit de 50%)
 function getHeatMultiplier() {
   if (isJammed || isFrozen || isPaused) return 1.0;
   return 1.0 + parseFloat(((heat / 100) * 2.0).toFixed(1));
@@ -667,7 +672,8 @@ setInterval(() => {
 function registerStrokeHeat() {
   if (!inRun || isJammed || isPaused) return;
 
-  const rate = WORLDS[currentWorld].heatRate;
+  let rate = WORLDS[currentWorld].heatRate;
+  if (permanentPerks.thermalVent) rate *= 0.5; // -50% de surchauffe
   heat = Math.min(100, heat + rate);
   updateHeatUI();
 
@@ -695,7 +701,7 @@ function triggerJam() {
   }, 3000);
 }
 
-// 10. CLICS EN RUN
+// CLICS EN RUN
 function handleMainClick(e) {
   if (!inRun || isJammed || isFrozen || isPaused) return;
 
@@ -741,7 +747,7 @@ function applyWorldSettings() {
   refreshUI();
 }
 
-// 11. BOUTIQUE DE RUN
+// BOUTIQUE DE RUN (Résonance Quantique double l'efficacité)
 function setupRunCatalog() {
   if (!catalogListEl) return;
   catalogListEl.innerHTML = '';
@@ -783,14 +789,15 @@ function buyRunItem(item) {
 
   zoucs -= item.cost;
   item.qty = (item.qty || 0) + 1;
-  if (item.gainClick) clickPower += item.gainClick;
-  if (item.gainAuto) passiveIncome += item.gainAuto;
+  
+  const mult = permanentPerks.quantumResonance ? 2 : 1;
+  if (item.gainClick) clickPower += (item.gainClick * mult);
+  if (item.gainAuto) passiveIncome += (item.gainAuto * mult);
 
   item.cost = Math.round(item.cost * item.mult);
   refreshUI();
 }
 
-// 12. RAFRAÎCHISSEMENT GLOBAL
 function refreshUI() {
   if (counterEl) counterEl.textContent = formatNum(zoucs);
   if (statPassiveEl) statPassiveEl.textContent = `+${passiveIncome.toFixed(1)}`;
@@ -800,7 +807,6 @@ function refreshUI() {
   updateShopVisibility();
 }
 
-// 13. SAUVEGARDE GLOBALE
 function saveGame() {
   const payload = {
     vaultZoucs,
@@ -816,16 +822,22 @@ function saveGame() {
 }
 setInterval(saveGame, 3000);
 
-// REVENU PASSIF EN RUN
+// REVENU PASSIF EN RUN (Le Carré Bêta transfère 10% de sa production globale si débloqué)
 setInterval(() => {
-  if (inRun && passiveIncome > 0 && !isJammed && !isPaused) {
-    zoucs += passiveIncome / 10;
-    if (counterEl) counterEl.textContent = formatNum(zoucs);
-    updateShopVisibility();
+  if (inRun && !isJammed && !isPaused) {
+    let totalPassive = passiveIncome;
+    if (permanentPerks.betaUnlock) {
+      totalPassive += (clickPower * 0.1); // Apporte 10% du clic de base en passif permanent
+    }
+    if (totalPassive > 0) {
+      zoucs += totalPassive / 10;
+      if (counterEl) counterEl.textContent = formatNum(zoucs);
+      updateShopVisibility();
+    }
   }
 }, 100);
 
-// --- ATTACHEMENT DES ÉVÉNEMENTS AU CHARGEMENT DE LA PAGE ---
+// ÉVÉNEMENTS DOM
 document.addEventListener('DOMContentLoaded', () => {
   initDomReferences();
 
@@ -856,6 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (activeSquare) {
     activeSquare.addEventListener('pointerdown', handleMainClick);
   }
+  
   if (betaSquare) {
     betaSquare.addEventListener('pointerdown', (e) => {
       if (!inRun || isJammed || isFrozen || isPaused) return;
@@ -962,7 +975,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initialisation finale sécurisée
   applyCosmetics();
   showView('hub');
   renderHub();
