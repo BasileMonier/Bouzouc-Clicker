@@ -10,24 +10,32 @@
   <link rel="stylesheet" href="css/clicker.css">
 </head>
 <body>
-  <!-- Mosaïque de faïence murale & reflet humide -->
-  <div class="bathroom-tiles"></div>
-  <div class="water-glaze"></div>
+  <!-- Fond briques de verre et réfraction lumineuse -->
+  <div class="glass-chamber"></div>
+  <div class="light-beams"></div>
 
-  <!-- COLONNE VERTICALE D'UNITÉS (À DROITE) -->
-  <aside class="elevator-shaft" aria-label="Colonne mécanique">
-    <div class="shaft-wire"></div>
-    <div id="elevator-track" class="elevator-track">
-      <!-- Les modules SVG injectés défilent ici du bas vers le haut -->
+  <!-- RÉSEAU DE CONVOYEURS / TAPIS ROULANTS EN ARRIÈRE-PLAN -->
+  <div class="conveyor-network" aria-hidden="true">
+    <div class="conveyor-lane lane-left">
+      <div class="belt-ribs"></div>
+      <div id="lane-track-1" class="lane-track"></div>
     </div>
-  </aside>
+    <div class="conveyor-lane lane-mid">
+      <div class="belt-ribs"></div>
+      <div id="lane-track-2" class="lane-track"></div>
+    </div>
+    <div class="conveyor-lane lane-right">
+      <div class="belt-ribs"></div>
+      <div id="lane-track-3" class="lane-track"></div>
+    </div>
+  </div>
 
-  <!-- CONTENU CENTRAL -->
+  <!-- INTERFACE PRINCIPALE -->
   <div class="app-layout">
     <header class="masthead">
       <div class="kicker">MANUFACTURE D'ÉMERAUDE</div>
       <h1>BOUZOUC CLICKER</h1>
-      <p class="subtitle">Extrayez les Zoucs, taillez l'émail et bâtissez votre atelier.</p>
+      <p class="subtitle">Façonnez le verre taillé et approvisionnez les lignes de montage.</p>
     </header>
 
     <main class="forge">
@@ -37,7 +45,7 @@
         <div id="passive-rate" class="rate">0,0 / sec</div>
       </div>
 
-      <!-- Carreau de faïence central taillé en biseau -->
+      <!-- Carreau central façon bloc de verre biseauté -->
       <div class="tile-block">
         <div class="tile-highlight"></div>
         <button id="bouzouc" class="bouzouc-btn" aria-label="Frapper le Bouzouc"></button>
@@ -46,8 +54,8 @@
 
     <footer class="bazaar">
       <div class="bazaar-header">
-        <h2>Atelier &amp; Outillage</h2>
-        <span class="sub-lead">Modules mécaniques</span>
+        <h2>Lignes de Production</h2>
+        <span class="sub-lead">Modules convoyés</span>
       </div>
 
       <div class="catalog">
